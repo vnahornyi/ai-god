@@ -1,5 +1,14 @@
 # Mode: Build
 
+## Contents
+
+- Gate 0 — establish what "solved" means
+- Gate 1 — check in before writing code
+- Blast radius is not optional
+- While writing
+- Gate 2 — pre-flight before saying "done"
+- Gate 3 — the report
+
 Used by `wf-implement` for React/RN code. Git and plan lifecycle: global instructions and `ai-workflow`.
 
 

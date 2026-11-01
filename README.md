@@ -13,7 +13,7 @@ works without it; `bin/check-public` keeps the overlay's material out of public 
 
 ```
                          SHARED — what, when, why
-   AGENTS.md (invariants: git, facts, memory, overrides)
+   global/AGENTS.md (invariants: git, facts, memory, overrides)
    skills/ai-workflow   (router: stage → skill, domain triggers, capability classes, plan lifecycle)
    skills/wf-*          (stages: plan, implement, review, peer-review, estimate, jira-task, worklog)
    skills/*             (domain knowledge: frontend-craft, figma-inspect, design-patterns, …)
@@ -40,7 +40,7 @@ developer switches between them deliberately (month to month). A task started in
 other, using the task conversation and repository state. A planned task has one temporary plan file
 while implementation is active; no state, handoff, segment, review, or escalation files exist.
 
-`AGENTS.md` tells every runtime to load `ai-workflow` first. The router names one stage skill and
+`global/AGENTS.md` tells every runtime to load `ai-workflow` first. The router names one stage skill and
 only the domain skills its triggers allow — "review this PR" loads `wf-review` (+ `frontend-craft`
 review mode for React), not planning, estimation or worklog. Skill descriptions are always in
 context, so they stay short and say when **not** to load.
@@ -59,8 +59,9 @@ PLANNING ─▶ IMPLEMENTING ─▶ INDEPENDENT REVIEW ─▶ APPROVED FIXES (if
 
 | Repo path | What it is | Claude Code | Codex | Copilot CLI and VS Code |
 | --- | --- | --- | --- | --- |
-| `AGENTS.md` | Global instructions | `~/.claude/CLAUDE.md` | `~/.codex/AGENTS.md` | `~/.copilot/copilot-instructions.md` |
-| `skills/<name>/` | Skills (`SKILL.md` + `references/` + `scripts/`) | `~/.claude/skills` (whole dir) | `~/.codex/skills/<name>` (per skill, next to Codex's `.system`) | `~/.copilot/skills/<name>` |
+| `AGENTS.md` | Maintenance rules for this repo (read by sessions working inside it) | — | — | — |
+| `global/AGENTS.md` | Global instructions | `~/.claude/CLAUDE.md` | `~/.codex/AGENTS.md` | `~/.copilot/copilot-instructions.md` |
+| `skills/<name>/` | Skills (`SKILL.md` + `references/` + `scripts/`) | `~/.claude/skills/<name>` (per skill; the directory itself is real, so claude.ai skill sync and `.trash` stay out of the repo) | `~/.codex/skills/<name>` (per skill, next to Codex's `.system`) | `~/.copilot/skills/<name>` |
 | `adapters/claude/runtime.md` | How the shared workflow runs in Claude Code | `~/.claude/ai-god-runtime.md` | — | — |
 | `adapters/codex/runtime.md` | How the shared workflow runs in Codex | — | `~/.codex/ai-god-runtime.md` | — |
 | `adapters/copilot/runtime.md` | How the shared workflow runs in both Copilot interfaces | — | — | `~/.copilot/ai-god-runtime.md` |
@@ -70,7 +71,9 @@ PLANNING ─▶ IMPLEMENTING ─▶ INDEPENDENT REVIEW ─▶ APPROVED FIXES (if
 | Copilot tool approvals | Runtime-managed; installer does not edit user settings | — | — | CLI flags and VS Code approval controls |
 | `bin/push-ai-god` | The only push an agent may run: `main` of this repo and of `local/`, fast-forward only, after `bin/check-public` | run by path | run by path | run by path |
 | `bin/check-public` | Leak gate: generic rules, the private denylist and identifiers from project checkouts; run by the pre-commit hook and the push script | run by path | run by path | run by path |
-| `.githooks/pre-commit` | Runs `bin/check-public --staged` (`core.hooksPath`, set by `install.sh`) | — | — | — |
+| `bin/lint-skills` | Frontmatter, size, link, router-coverage and leak-name checks for every skill | run by path | run by path | run by path |
+| `bin/token-report` | Always-loaded, per-skill and per-flow instruction sizes (overlay names redacted) | run by path | run by path | run by path |
+| `.githooks/pre-commit` | Runs `bin/check-public --staged` and `bin/lint-skills` (`core.hooksPath`, set by `install.sh`) | — | — | — |
 | `evals/` | Fixed tasks, rubrics and results for measuring skill changes (`evals/README.md`) | not linked | not linked | not linked |
 | `local/projects/<project>/rules.md` | Always-on project rules | read via `AGENTS.md` → Project layer | same | same |
 | `local/projects/<project>/skills/<name>/` | Project skills | `~/Developer/<project>/.claude/skills/<name>` (only if git-ignored there) | `~/.codex/skills/<name>` | `~/.copilot/skills/<name>` |
@@ -132,7 +135,7 @@ codex execpolicy check --rules ~/Developer/ai-god/adapters/codex/rules/ai-god.ru
 
 Edit through the symlinks or directly here — it is the same file. The agent stages changes and
 stops. Once the developer approves that staged set in chat, the agent commits and pushes it itself
-with `bin/push-ai-god` (`AGENTS.md` → Git rule 7). This exception covers this repo and its `local/`
+with `bin/push-ai-god` (`global/AGENTS.md` → Git rule 7). This exception covers this repo and its `local/`
 overlay only; in every other repo pushing stays the developer's.
 
 `git push` itself stays blocked for agents everywhere, including here. The script takes no arguments,
@@ -176,10 +179,10 @@ When a new agent runtime appears, the skills do not change. Add:
 2. Its push restriction and sanctioned-script allowance in the runtime's native permission format
    under `adapters/<runtime>/`. If the runtime cannot enforce these rules, document that limitation
    in its adapter and preserve the approval prompts.
-3. An `install_<runtime>` function in `install.sh` linking `AGENTS.md` (or the runtime's instruction
+3. An `install_<runtime>` function in `install.sh` linking `global/AGENTS.md` (or the runtime's instruction
    file), each skill, and the adapter as `ai-god-runtime.md`; link a permission file when the runtime
    has one, and add the runtime to `--agent` and auto-detection.
-4. A row in the Layout table above and in `AGENTS.md` → "Runtime adapter".
+4. A row in the Layout table above and in `global/AGENTS.md` → "Runtime adapter".
 5. The acceptance run: verify a cold implementation can continue from the single task plan, then run an independent review from a self-contained prompt with no implementation history.
 
 ## Writing agent-neutral skills
@@ -198,21 +201,22 @@ markdown body, relative links into `references/` and `scripts/`.
 4. **Capability classes, never model names.** A stage "requires FRONTIER_REASONING"; the adapters'
    "Model mapping" says which model that is today. Updating a model touches two tables, no skill.
 5. **Instruction files:** say `AGENTS.md` / `CLAUDE.md` (projects may have either), and "global
-   agent instructions" for this repo's `AGENTS.md`.
+   agent instructions" for this repo's `global/AGENTS.md`.
 6. **Context that must survive a session** goes into one compact prompt in the conversation (or the
    task's single plan file) per `ai-workflow` → Moving context — never "the next agent will know",
    never a handoff file.
 7. **Scripts** are plain POSIX-ish bash/python with no agent dependency.
 
-Quick scan for leaks before staging a skill change:
+Check a skill change mechanically before staging (the pre-commit hook runs it too):
 
 ```bash
-rg -n "SendMessage|subagent_type|run_in_background|ToolSearch|mcp__|Skill tool|spawn_agent|fork_turns|\\bClaude\\b|Codex|Copilot|Opus|Sonnet|Haiku|Fable|gpt-" ~/Developer/ai-god/skills
+~/Developer/ai-god/bin/lint-skills
 ```
 
-Expected hits: the calibration note in `wf-estimate/references/estimation.md` (it names the model the
-estimates were measured on) and the TemPad Dev tool names in `figma-inspect` (an MCP server, the same
-in every runtime).
+It enforces the frontmatter, size and link rules from the root `AGENTS.md` → "Changing a skill", the
+router coverage, and the leak scan for runtime tool and model names. Allowed hits: the calibration note
+in `wf-estimate/references/estimation.md` (it names the model the estimates were measured on) and the
+TemPad Dev tool names in `figma-inspect` (an MCP server, the same in every runtime).
 
 ## Project-local paths the skills write
 

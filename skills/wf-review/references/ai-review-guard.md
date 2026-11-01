@@ -1,5 +1,15 @@
 # AI review guard — cutting unrealistic review comments
 
+## Contents
+
+- The gates
+- What survives
+- Answering a cut comment
+- Voice
+- Learning loop — run after every use
+- Learned cases
+- When producing a review yourself
+
 Use this on every comment that comes from an AI reviewer — someone else's bot on the developer's PR,
 the runtime's review engine, or your own candidate list before it is reported. A comment survives only
 if it passes every gate below. The gates are ordered by how often bot reviews fail them.

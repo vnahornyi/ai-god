@@ -1,5 +1,14 @@
 # Browser recipes
 
+## Contents
+
+- 0. Open and confirm the session
+- 1. Select the deepest layer
+- 2. Scrape the properties panel
+- 3. Zoom and pan
+- 4. Layer inventory from the layers panel
+- 5. What not to do
+
 Everything below runs in the **signed-in browser**, as JS injected into the Figma tab, or as clicks
 at canvas coordinates. The runtime adapter's *Browser* section says which capability is which and
 lists the runtime's own quirks (notably: injected JS may not await promises — park the result on

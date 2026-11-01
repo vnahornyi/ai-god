@@ -103,6 +103,10 @@ agent uses profile-based user customizations and is outside this adapter.
 
 ## Permissions
 
+- **No persistent deny list from this repo.** Claude Code (`settings.base.json`) and Codex
+  (`ai-god.rules`) deny push, `git add .`/`-A`, amend, `--no-verify`, rebase, `reset --hard`, stash
+  drop and branch deletion; Copilot gets none of it from the installer, so those Git rules rest on
+  the global instructions and the approval prompts here.
 - **CLI:** shell and other tools are subject to Copilot's approval policy. `--deny-tool` can block a
   tool for the session, and a deny takes precedence over an allow. Keep direct `git push` denied;
   never grant broad shell access just to run the sanctioned script. `bin/push-ai-god` remains subject
@@ -116,7 +120,7 @@ agent uses profile-based user customizations and is outside this adapter.
 ## Skills and instructions
 
 By default, both Copilot CLI and the Copilot Agent Host in VS Code use `~/.copilot`. The installer
-links this repo's `AGENTS.md` as `copilot-instructions.md`, links each shared skill under
+links this repo's `global/AGENTS.md` as `copilot-instructions.md`, links each shared skill under
 `skills/<name>/`, and links this adapter as `ai-god-runtime.md`. Copilot CLI's `COPILOT_HOME` can
 override its config directory; it does not change the documented VS Code Agent Host location, so
 the installer handles the two destinations separately.

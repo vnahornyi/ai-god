@@ -178,11 +178,29 @@ PY
   then drift=1; fi
 }
 
+# ~/.claude/skills is a real directory of per-skill links, so what Claude Code writes there itself
+# (claude.ai skill sync into synced/, its .trash) stays out of this repo.
+install_claude_skills() {
+  local dir="$CLAUDE_DIR/skills" skill
+  if [ -L "$dir" ]; then
+    case "$MODE" in
+      check) echo "DRIFT   $dir is a symlink (now: $(readlink "$dir")), expected a directory of per-skill links"; drift=1; return 0 ;;
+      dry-run) echo "replace $dir symlink with a directory of per-skill links" ;;
+      *) rm "$dir"; mkdir -p "$dir"; echo "replaced $dir symlink with a directory" ;;
+    esac
+  fi
+  for skill in "$REPO"/skills/*/; do
+    [ -f "${skill}SKILL.md" ] || continue
+    link "${skill%/}" "$dir/$(basename "$skill")"
+  done
+  prune_stale "$dir"
+}
+
 install_claude() {
   echo "== Claude Code ($CLAUDE_DIR)"
-  link "$REPO/AGENTS.md" "$CLAUDE_DIR/CLAUDE.md"
+  link "$REPO/global/AGENTS.md" "$CLAUDE_DIR/CLAUDE.md"
   install_claude_settings
-  link "$REPO/skills" "$CLAUDE_DIR/skills"
+  install_claude_skills
   link "$REPO/adapters/claude/runtime.md" "$CLAUDE_DIR/ai-god-runtime.md"
   local dir name slug
   [ -d "$OVERLAY/memory" ] || echo "skip    memory: no $OVERLAY/memory"
@@ -197,7 +215,7 @@ install_claude() {
 
 install_codex() {
   echo "== Codex ($CODEX_DIR)"
-  link "$REPO/AGENTS.md" "$CODEX_DIR/AGENTS.md"
+  link "$REPO/global/AGENTS.md" "$CODEX_DIR/AGENTS.md"
   link "$REPO/adapters/codex/runtime.md" "$CODEX_DIR/ai-god-runtime.md"
   # Per-skill links: ~/.codex/skills also holds Codex's own .system skills.
   local skill rules
@@ -216,7 +234,7 @@ install_codex() {
 install_copilot() {
   local name="$1" dir="$2" skill
   echo "== $name ($dir)"
-  link "$REPO/AGENTS.md" "$dir/copilot-instructions.md"
+  link "$REPO/global/AGENTS.md" "$dir/copilot-instructions.md"
   link "$REPO/adapters/copilot/runtime.md" "$dir/ai-god-runtime.md"
   for skill in "$REPO"/skills/*/; do
     [ -f "${skill}SKILL.md" ] || continue

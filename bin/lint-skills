@@ -1,0 +1,146 @@
+#!/usr/bin/env python3
+"""Deterministic checks for the skills in this repo (AGENTS.md → Changing a skill).
+
+  lint-skills               check skills/*; overlay project skills are reported as warnings
+  lint-skills --self-test   run the built-in cases
+
+Checks per skill: frontmatter keys exactly `name` and `description`; `name` equals the directory and
+is lowercase-hyphenated (≤ 64); description non-empty, ≤ 1,024 chars, no angle brackets; body
+≤ 500 lines and ≤ 20,000 chars (≈ 5,000 tokens); relative markdown links resolve; reference files
+over 100 lines open with `## Contents`; the `ai-workflow` router names the skill; no runtime tool
+or model names in skill text (README → "Writing agent-neutral skills"). Prints `file:line: message`;
+exits 1 on any public error.
+"""
+import glob
+import os
+import re
+import subprocess
+import sys
+import tempfile
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+NAME = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$")
+LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
+LEAK = re.compile(r"SendMessage|subagent_type|run_in_background|ToolSearch|mcp__|Skill tool|spawn_agent"
+                  r"|fork_turns|\bClaude\b|Codex|Copilot|Opus|Sonnet|Haiku|Fable|gpt-")
+# README → "Expected hits": the model the estimates were measured on; an MCP server's tool names.
+LEAK_ALLOWED = {"wf-estimate/references/estimation.md", "figma-inspect/SKILL.md",
+                "figma-inspect/references/browser-recipes.md"}
+MAX_DESC, MAX_LINES, MAX_CHARS, TOC_OVER = 1024, 500, 20000, 100
+
+
+def parse(text):
+    m = re.match(r"---\n(.*?)\n---\n", text, re.S)
+    if not m:
+        return None, text, 0
+    keys = {}
+    for line in m.group(1).split("\n"):
+        k = re.match(r"^([A-Za-z0-9_-]+):\s*(.*)$", line)
+        if k:
+            keys[k.group(1)] = k.group(2).strip().strip('"')
+    return keys, text[m.end():], m.group(0).count("\n")
+
+
+def lint_skill(skill_dir, router_text, root):
+    errors = []
+    rel = os.path.relpath(skill_dir, root)
+    name = os.path.basename(skill_dir)
+    path = os.path.join(skill_dir, "SKILL.md")
+    text = open(path, encoding="utf-8").read()
+    keys, body, offset = parse(text)
+    where = os.path.relpath(path, root)
+    if keys is None:
+        return [f"{where}:1: no YAML frontmatter"]
+    if set(keys) != {"name", "description"}:
+        errors.append(f"{where}:1: frontmatter keys must be exactly name, description (got {sorted(keys)})")
+    if keys.get("name") != name or not NAME.match(name):
+        errors.append(f"{where}:1: name must equal the directory and be lowercase-hyphenated (≤ 64)")
+    desc = keys.get("description", "")
+    if not desc or len(desc) > MAX_DESC or "<" in desc or ">" in desc:
+        errors.append(f"{where}:1: description must be 1–{MAX_DESC} chars without < or > (got {len(desc)})")
+    if body.count("\n") > MAX_LINES:
+        errors.append(f"{where}:1: body has {body.count(chr(10))} lines (max {MAX_LINES})")
+    if len(body) > MAX_CHARS:
+        errors.append(f"{where}:1: body has {len(body)} chars ≈ {len(body) // 4} tokens (max {MAX_CHARS} ≈ 5,000)")
+    if name != "ai-workflow" and router_text is not None and f"`{name}`" not in router_text:
+        errors.append(f"{where}:1: the ai-workflow router does not name `{name}`")
+    for md in [path] + sorted(glob.glob(os.path.join(skill_dir, "references", "**", "*.md"), recursive=True)):
+        mtext = open(md, encoding="utf-8").read()
+        mrel = os.path.relpath(md, root)
+        inner = os.path.relpath(md, os.path.dirname(skill_dir))
+        lines = mtext.split("\n")
+        if md != path and len(lines) > TOC_OVER and "## Contents" not in mtext:
+            errors.append(f"{mrel}:1: {len(lines)} lines without a '## Contents' section")
+        for number, line in enumerate(lines, 1):
+            for target in LINK.findall(line):
+                if re.match(r"^[a-z]+:|^#", target):
+                    continue
+                if not os.path.exists(os.path.join(os.path.dirname(md), target.split("#")[0])):
+                    errors.append(f"{mrel}:{number}: broken link {target}")
+            if inner not in LEAK_ALLOWED and LEAK.search(line):
+                errors.append(f"{mrel}:{number}: runtime tool or model name '{LEAK.search(line).group(0)}'")
+    return errors
+
+
+def run(root):
+    router_path = os.path.join(root, "skills", "ai-workflow", "SKILL.md")
+    router = open(router_path, encoding="utf-8").read() if os.path.exists(router_path) else None
+    errors, warnings = [], []
+    for skill in sorted(glob.glob(os.path.join(root, "skills", "*", ""))):
+        if os.path.exists(os.path.join(skill, "SKILL.md")):
+            errors += lint_skill(skill.rstrip("/"), router, root)
+    for skill in sorted(glob.glob(os.path.join(root, "local", "projects", "*", "skills", "*", ""))):
+        if os.path.exists(os.path.join(skill, "SKILL.md")):
+            warnings += [w for w in lint_skill(skill.rstrip("/"), None, root) if "tool or model name" not in w]
+    for e in errors:
+        print(e)
+    for w in warnings:
+        print("warning (overlay):", w)
+    print(f"lint-skills: {len(errors)} error(s), {len(warnings)} overlay warning(s)", file=sys.stderr)
+    return 1 if errors else 0
+
+
+def self_test():
+    cases = {
+        "frontmatter keys": ("bad-keys", "---\nname: bad-keys\ndescription: d\nlicense: x\n---\nbody\n"),
+        "name must equal": ("Wrong_Name", "---\nname: other\ndescription: d\n---\nbody\n"),
+        "description must": ("long-desc", "---\nname: long-desc\ndescription: " + "x" * 1025 + "\n---\nbody\n"),
+        "lines (max": ("long-body", "---\nname: long-body\ndescription: d\n---\n" + "l\n" * 501),
+        "broken link": ("bad-link", "---\nname: bad-link\ndescription: d\n---\nsee [x](references/none.md)\n"),
+        "router does not name": ("unrouted", "---\nname: unrouted\ndescription: d\n---\nbody\n"),
+        "tool or model name": ("leaky", "---\nname: leaky\ndescription: d\n---\nuse the Skill tool\n"),
+    }
+    failures = []
+    with tempfile.TemporaryDirectory() as tmp:
+        os.makedirs(os.path.join(tmp, "skills", "ai-workflow"))
+        routed = " ".join(f"`{d}`" for _, (d, _) in cases.items() if d != "unrouted") + " `good` `no-toc`"
+        open(os.path.join(tmp, "skills", "ai-workflow", "SKILL.md"), "w").write(
+            "---\nname: ai-workflow\ndescription: d\n---\n" + routed + "\n")
+        for _, (d, content) in cases.items():
+            os.makedirs(os.path.join(tmp, "skills", d))
+            open(os.path.join(tmp, "skills", d, "SKILL.md"), "w").write(content)
+        os.makedirs(os.path.join(tmp, "skills", "no-toc", "references"))
+        open(os.path.join(tmp, "skills", "no-toc", "SKILL.md"), "w").write("---\nname: no-toc\ndescription: d\n---\nb\n")
+        open(os.path.join(tmp, "skills", "no-toc", "references", "r.md"), "w").write("# R\n" + "x\n" * 101)
+        os.makedirs(os.path.join(tmp, "skills", "good", "references"))
+        open(os.path.join(tmp, "skills", "good", "SKILL.md"), "w").write(
+            "---\nname: good\ndescription: Use when testing.\n---\nsee [r](references/r.md)\n")
+        open(os.path.join(tmp, "skills", "good", "references", "r.md"), "w").write("# R\n")
+        router = open(os.path.join(tmp, "skills", "ai-workflow", "SKILL.md")).read()
+        for expected, (d, _) in cases.items():
+            got = lint_skill(os.path.join(tmp, "skills", d), router, tmp)
+            if not any(expected in e for e in got):
+                failures.append(f"{d}: expected '{expected}', got {got}")
+        if not any("Contents" in e for e in lint_skill(os.path.join(tmp, "skills", "no-toc"), router, tmp)):
+            failures.append("no-toc: missing Contents not detected")
+        good = lint_skill(os.path.join(tmp, "skills", "good"), router, tmp)
+        if good:
+            failures.append(f"good: clean skill flagged {good}")
+    for f in failures:
+        print("FAIL", f)
+    print(f"self-test: {len(failures)} failure(s)")
+    return 1 if failures else 0
+
+
+if __name__ == "__main__":
+    sys.exit(self_test() if sys.argv[1:] == ["--self-test"] else run(REPO))

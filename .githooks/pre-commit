@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
-# Leak gate for public commits: nothing from the local overlay may enter the public tree.
+# Gates for public commits: nothing from the local overlay may enter the public tree, and the skills
+# keep the repo's mechanical rules (AGENTS.md → Before staging). lint-skills reads the working tree.
 set -euo pipefail
-exec "$(git rev-parse --show-toplevel)/bin/check-public" --staged
+root="$(git rev-parse --show-toplevel)"
+"$root/bin/check-public" --staged
+"$root/bin/lint-skills"

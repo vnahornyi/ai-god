@@ -1,5 +1,22 @@
 # Plan artifact template
 
+## Contents
+
+Sections of the template below:
+
+- §1 Task
+- §2 Context: what already exists
+- §3 Problem framing & architecture decision
+- §4 Implementation steps
+- §5 i18n
+- §6 Unit tests
+- §7 Snapshot tests
+- §8 Manual QA cases
+- §9 Regression checklist
+- §10 Estimation inputs (no hours)
+- §11 Verification checklist (before the PR)
+- §12 Open questions and follow-ups
+
 Copy this structure. Delete nothing; write `None` / `N/A` where a section does not apply.
 
 **Language: write the plan in English** — the implementation model reads it. The summary in chat

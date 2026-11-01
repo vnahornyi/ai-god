@@ -21,3 +21,46 @@ prefix_rule(
     decision = "forbidden",
     justification = "Updates a remote. Pushing belongs to the developer.",
 )
+
+# Git rules 2 and 4: exact staging, no history rewrites. Prefix rules see only leading tokens, so a
+# flag after the message (`git commit -m x --amend`) is not caught here — the Git rules still apply.
+prefix_rule(
+    pattern = ["git", "add", ["-A", "--all", "."]],
+    decision = "forbidden",
+    justification = "Stage exact files with `git add -- <files>` (AGENTS.md Git rule 2).",
+    match = [["git", "add", "-A"], ["git", "add", "."]],
+    not_match = [["git", "add", "--", "README.md"]],
+)
+
+prefix_rule(
+    pattern = ["git", "commit", ["--amend", "--no-verify", "-n"]],
+    decision = "forbidden",
+    justification = "No amend and no skipped hooks (AGENTS.md Git rule 4).",
+    match = [["git", "commit", "--amend"], ["git", "commit", "--no-verify", "-m", "x"]],
+    not_match = [["git", "commit", "-m", "x"]],
+)
+
+prefix_rule(
+    pattern = ["git", "rebase"],
+    decision = "forbidden",
+    justification = "History rewrites are the developer's (AGENTS.md Git rule 4).",
+)
+
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "forbidden",
+    justification = "Never discard work; unstage with `git restore --staged` (AGENTS.md Git rules 4, 6).",
+    not_match = [["git", "reset", "--", "README.md"]],
+)
+
+prefix_rule(
+    pattern = ["git", "stash", ["drop", "clear"]],
+    decision = "forbidden",
+    justification = "Dropping stashes is the developer's (AGENTS.md Git rule 4).",
+)
+
+prefix_rule(
+    pattern = ["git", "branch", ["-D", "--delete"]],
+    decision = "forbidden",
+    justification = "Branch deletion is the developer's (AGENTS.md Git rule 4).",
+)

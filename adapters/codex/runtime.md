@@ -125,8 +125,12 @@ establishes intent from the task and its sources.
 
 ## Permissions
 
-- `adapters/codex/rules/ai-god.rules` → `~/.codex/rules/`: `git push` and `gh repo sync` forbidden;
-  `bin/push-ai-god` allowed.
+- `adapters/codex/rules/ai-god.rules` → `~/.codex/rules/`: `git push`, `gh repo sync`, `git add .`/`-A`,
+  `git commit --amend`/`--no-verify`, `git rebase`, `git reset --hard`, `git stash drop`/`clear` and
+  `git branch -D` forbidden; `bin/push-ai-god` allowed. Prefix rules match leading tokens only, so a
+  flag placed after other arguments is not caught — the Git rules still apply. *Unverified on this
+  machine: the `codex` CLI was not installed on 2026-11-01; check with
+  `codex execpolicy check --rules adapters/codex/rules/ai-god.rules git rebase`.*
 - `config.toml` is the developer's file; installers never edit it. Optional profiles, if the
   developer wants one-word starts, go there by hand:
 
@@ -156,6 +160,6 @@ establishes intent from the task and its sources.
 
 - Skills: `~/.codex/skills/<name>` → `ai-god/skills/<name>`, one link per skill next to Codex's
   `.system` skills. Mention by name (`$ai-workflow`) or let the description trigger it.
-- Global instructions: `~/.codex/AGENTS.md` → `ai-god/AGENTS.md`; project `AGENTS.md` files are read
+- Global instructions: `~/.codex/AGENTS.md` → `ai-god/global/AGENTS.md`; project `AGENTS.md` files are read
   from the repo (`CLAUDE.md` is not, unless `project_doc_fallback_filenames` lists it).
 - Project memory: not auto-loaded — `AGENTS.md` → "Project memory" tells the agent to read it.

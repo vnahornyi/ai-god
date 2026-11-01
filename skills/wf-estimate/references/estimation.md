@@ -1,5 +1,15 @@
 # Estimation model
 
+## Contents
+
+- The scale
+- What the estimate must cover
+- Step 0 — Risk profile (decides which lines exist)
+- Block A — Development (raw)
+- Block B — Additional time, always shown
+- Reporting format (chat only)
+- Source
+
 Estimate in hours: compute raw lines, then snap the total to the company scale. The scale value is
 the estimate; the raw lines make it auditable.
 

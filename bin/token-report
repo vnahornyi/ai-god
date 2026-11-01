@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+"""Instruction-size report for ai-god: what is always loaded, every skill body, and per-flow totals.
+
+  token-report            print the report (tokens ≈ chars / 4 — an approximation, not a tokenizer)
+  token-report --names    show overlay skill names (private: never paste that output into the public tree)
+
+Always exits 0. Project skills and flows that live in the local overlay are included when it exists;
+their names are redacted by default so the report can go into evals/results.
+"""
+import glob
+import os
+import re
+import sys
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OVERLAY = os.path.join(REPO, "local")
+
+# Files each flow reads before it touches any code. Paths relative to REPO; missing files are listed.
+FLOWS = {
+    "review": [
+        "skills/ai-workflow/SKILL.md", "skills/wf-review/SKILL.md",
+        "skills/wf-review/references/review-contract.md", "skills/wf-review/references/ai-review-guard.md",
+        "skills/frontend-craft/SKILL.md", "skills/frontend-craft/references/mode-review.md",
+        "skills/frontend-craft/references/problem-framing.md", "adapters/claude/runtime.md",
+    ],
+    "plan (project)": [
+        "skills/ai-workflow/SKILL.md", "skills/wf-plan/SKILL.md", "skills/wf-plan/references/plan-template.md",
+        "local/projects/*/skills/*-planning/SKILL.md", "local/projects/*/skills/*-react-patterns/SKILL.md",
+        "skills/frontend-craft/SKILL.md", "skills/frontend-craft/references/mode-plan.md",
+        "skills/frontend-craft/references/problem-framing.md", "skills/ai-workflow/references/model-policy.md",
+    ],
+    "implement (project)": [
+        "skills/ai-workflow/SKILL.md", "skills/wf-implement/SKILL.md",
+        "local/projects/*/skills/*-react-patterns/SKILL.md", "skills/frontend-craft/SKILL.md",
+        "skills/frontend-craft/references/mode-build.md", "skills/ai-workflow/references/model-policy.md",
+    ],
+}
+
+
+def tokens(chars):
+    return chars // 4
+
+
+def size(path):
+    try:
+        return len(open(path, encoding="utf-8").read())
+    except OSError:
+        return None
+
+
+def frontmatter(text):
+    m = re.match(r"---\n(.*?)\n---\n", text, re.S)
+    if not m:
+        return "", text
+    return m.group(1), text[m.end():]
+
+
+def skills():
+    roots = [os.path.join(REPO, "skills", "*", "SKILL.md"),
+             os.path.join(OVERLAY, "projects", "*", "skills", "*", "SKILL.md")]
+    for pattern in roots:
+        for path in sorted(glob.glob(pattern)):
+            fm, body = frontmatter(open(path, encoding="utf-8").read())
+            desc = re.search(r"^description:\s*(.*)$", fm, re.M)
+            yield os.path.relpath(os.path.dirname(path), REPO), len(desc.group(1)) if desc else 0, body
+
+
+def label(name, redacted):
+    if not name.startswith("local/") or redacted is None:
+        return name
+    redacted.setdefault(name, f"overlay project skill {chr(ord('A') + len(redacted))}")
+    return redacted[name]
+
+
+def main():
+    redacted = {} if "--names" not in sys.argv else None
+    print("Always loaded")
+    agents = size(os.path.join(REPO, "global", "AGENTS.md")) or size(os.path.join(REPO, "AGENTS.md")) or 0
+    print(f"  global instructions   {agents:>7} chars  ≈{tokens(agents):>6} tok")
+    if os.path.exists(os.path.join(REPO, "global", "AGENTS.md")):
+        own = size(os.path.join(REPO, "AGENTS.md")) or 0
+        print(f"  + inside ai-god only  {own:>7} chars  ≈{tokens(own):>6} tok  (root AGENTS.md, maintenance)")
+    rows = list(skills())
+    desc_total = sum(r[1] for r in rows)
+    print(f"  skill descriptions    {desc_total:>7} chars  ≈{tokens(desc_total):>6} tok  ({len(rows)} skills)")
+    print("\nSkill bodies (lines · chars · ≈tok)")
+    for name, desc, body in sorted(rows, key=lambda r: -len(r[2])):
+        flag = "  over 5k tok" if tokens(len(body)) > 5000 else ""
+        shown = label(name, redacted) if redacted is not None else name
+        print(f"  {shown:<52} {body.count(chr(10)):>4} · {len(body):>6} · ≈{tokens(len(body)):>5}{flag}")
+    print("\nFlows (instructions read before any code)")
+    for flow, patterns in FLOWS.items():
+        total, missing = 0, []
+        for pattern in patterns:
+            matches = glob.glob(os.path.join(REPO, pattern))
+            if not matches:
+                missing.append(pattern)
+            total += sum(size(m) or 0 for m in matches)
+        note = f"  (missing: {', '.join(missing)})" if missing else ""
+        print(f"  {flow:<22} {total:>7} chars  ≈{tokens(total):>6} tok{note}")
+
+
+if __name__ == "__main__":
+    main()
