@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# The only push an agent may run: main of this repo and of its local/ overlay, each to its own
+# origin, fast-forward only. Public commits pass bin/check-public first.
+# Takes no arguments on purpose — no remote, branch or flag can be smuggled in.
+# Agents run it only after the developer approved the commit in chat (AGENTS.md → Git rules).
+set -euo pipefail
+
+[ $# -eq 0 ] || { echo "push-ai-god takes no arguments" >&2; exit 2; }
+
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Prints the number of commits main is ahead of origin/main; refuses on anything unsafe.
+ahead_of_origin() {
+  local dir="$1"
+  [ "$(git -C "$dir" rev-parse --abbrev-ref HEAD)" = "main" ] || { echo "$dir: not on main — refusing" >&2; return 1; }
+  git -C "$dir" diff --cached --quiet || { echo "$dir: staged changes not committed — refusing" >&2; return 1; }
+  git -C "$dir" fetch --quiet origin main
+  if ! git -C "$dir" merge-base --is-ancestor origin/main HEAD; then
+    echo "$dir: origin/main has commits that are not here — pull and review first, refusing" >&2
+    return 1
+  fi
+  git -C "$dir" rev-list --count origin/main..HEAD
+}
+
+push_main() {
+  local dir="$1" ahead="$2"
+  echo "pushing $ahead commit(s) of $dir to origin/main:"
+  git -C "$dir" --no-pager log --oneline origin/main..HEAD
+  git -C "$dir" push origin main
+}
+
+ahead="$(ahead_of_origin "$REPO")"
+if [ "$ahead" -gt 0 ]; then
+  if [ -d "$REPO/local/.git" ] && [ ! -f "$REPO/local/public-denylist.txt" ]; then
+    echo "local/public-denylist.txt missing — refusing the public push" >&2
+    exit 1
+  fi
+  "$REPO/bin/check-public" --range origin/main..HEAD || { echo "leak check failed — refusing the public push" >&2; exit 1; }
+  push_main "$REPO" "$ahead"
+else
+  echo "public: nothing to push"
+fi
+
+if [ -d "$REPO/local/.git" ] && git -C "$REPO/local" remote get-url origin >/dev/null 2>&1; then
+  ahead="$(ahead_of_origin "$REPO/local")"
+  if [ "$ahead" -gt 0 ]; then push_main "$REPO/local" "$ahead"; else echo "local: nothing to push"; fi
+elif [ -d "$REPO/local/.git" ]; then
+  echo "local: no origin configured — nothing pushed"
+fi

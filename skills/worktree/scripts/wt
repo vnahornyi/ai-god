@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+# wt — git worktrees next to the repository (~/Developer/<repo>.worktrees/<branch>), with the
+# git-ignored essentials (dependencies, generated files, local config) cloned from the main checkout.
+set -euo pipefail
+
+AI_GOD="${AI_GOD:-$HOME/Developer/ai-god}"
+
+die() { printf 'wt: %s\n' "$*" >&2; exit 1; }
+
+usage() {
+  cat <<'EOF'
+usage:
+  wt new <branch> [--from <ref>] [--no-open]  create a worktree for <branch> (new from <ref>, default
+                                               the current HEAD; existing branch checked out), set it up,
+                                               open it in VS Code
+  wt setup [<path>]                            clone ignored essentials from the main checkout into a
+                                               linked worktree (default: the current one); never overwrites
+  wt open <branch> | --main                    open a worktree (or the main checkout) in a new VS Code window
+  wt path <branch>                             print the worktree path
+  wt list                                      git worktree list
+  wt rm <branch>                               remove a clean worktree; the branch is kept
+EOF
+}
+
+main_root() {
+  local common
+  common=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || die "not inside a git repository"
+  dirname "$common"
+}
+
+wt_base() {
+  local main
+  main=$(main_root)
+  printf '%s/%s.worktrees' "$(dirname "$main")" "$(basename "$main")"
+}
+
+include_file() { printf '%s/local/projects/%s/worktree-include' "$AI_GOD" "$(basename "$(main_root)")"; }
+
+clone_entry() {
+  local main="$1" wt="$2" rel="$3"
+  local src="$main/$rel" dst="$wt/$rel"
+  if [ -e "$dst" ] || [ -L "$dst" ]; then
+    printf 'keep    %s\n' "$rel"
+    return
+  fi
+  mkdir -p "$(dirname "$dst")"
+  if cp -Rc "$src" "$dst" 2>/dev/null; then
+    printf 'clone   %s\n' "$rel"
+  else
+    rm -rf "$dst"
+    cp -R "$src" "$dst"
+    printf 'copy    %s (copy-on-write clone unavailable)\n' "$rel"
+  fi
+}
+
+cmd_setup() {
+  local wt main inc line entry lock
+  wt=$(cd "${1:-.}" && git rev-parse --show-toplevel 2>/dev/null) || die "not a git checkout: ${1:-.}"
+  main=$(cd "$wt" && main_root)
+  [ "$wt" != "$main" ] || die "$wt is the main checkout; setup runs inside a linked worktree"
+  inc=$(cd "$wt" && include_file)
+  if [ ! -f "$inc" ]; then
+    printf 'wt: no %s — nothing to clone\n' "$inc"
+    return 0
+  fi
+
+  local paths=()
+  while IFS= read -r line || [ -n "$line" ]; do
+    line="${line%%#*}"
+    line="$(printf '%s' "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+    [ -n "$line" ] && paths+=("$line")
+  done < "$inc"
+  [ "${#paths[@]}" -gt 0 ] || return 0
+
+  git -C "$main" ls-files --others --ignored --exclude-standard --directory -- "${paths[@]}" |
+    while IFS= read -r entry; do
+      clone_entry "$main" "$wt" "${entry%/}"
+    done
+
+  git -C "$wt" ls-files -- '*package-lock.json' '*yarn.lock' '*pnpm-lock.yaml' '*Podfile.lock' |
+    while IFS= read -r lock; do
+      if [ -f "$main/$lock" ] && ! cmp -s "$main/$lock" "$wt/$lock"; then
+        printf 'warn    %s differs from the main checkout — reinstall dependencies in %s\n' \
+          "$lock" "$(dirname "$wt/$lock")"
+      fi
+    done
+}
+
+cmd_open() {
+  local path
+  if [ "${1:-}" = "--main" ]; then
+    path=$(main_root)
+  else
+    path="$(wt_base)/${1:?usage: wt open <branch> | --main}"
+  fi
+  [ -d "$path" ] || die "no worktree at $path"
+  command -v code >/dev/null 2>&1 || die "VS Code CLI 'code' not found; open $path manually"
+  code -n "$path"
+}
+
+cmd_new() {
+  local name="" from="" open=1 main path
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --from) from="${2:?--from needs a ref}"; shift 2 ;;
+      --no-open) open=0; shift ;;
+      -h|--help) usage; return 0 ;;
+      -*) die "unknown option $1" ;;
+      *) [ -z "$name" ] || die "one branch name only"; name="$1"; shift ;;
+    esac
+  done
+  [ -n "$name" ] || die "usage: wt new <branch> [--from <ref>] [--no-open]"
+  main=$(main_root)
+  path="$(wt_base)/$name"
+  [ ! -e "$path" ] || die "$path already exists — wt open $name"
+
+  mkdir -p "$(dirname "$path")"
+  if git -C "$main" show-ref --verify --quiet "refs/heads/$name"; then
+    [ -z "$from" ] || die "branch $name exists; drop --from to check it out"
+    git -C "$main" worktree add "$path" "$name"
+  else
+    from=$(git rev-parse --verify "${from:-HEAD}^{commit}") || die "unknown ref ${from:-HEAD}"
+    git -C "$main" worktree add -b "$name" "$path" "$from"
+  fi
+
+  cmd_setup "$path"
+  printf 'ready   %s\n' "$path"
+  [ "$open" = 0 ] || cmd_open "$name"
+}
+
+cmd_rm() {
+  local name="${1:?usage: wt rm <branch>}" base path dir
+  base=$(wt_base)
+  path="$base/$name"
+  [ -d "$path" ] || die "no worktree at $path"
+  git -C "$(main_root)" worktree remove "$path"
+  # a branch like feature/x leaves feature/ behind; drop empty parents, keep the base itself
+  dir=$(dirname "$path")
+  while [ "$dir" != "$base" ] && rmdir "$dir" 2>/dev/null; do dir=$(dirname "$dir"); done
+  printf 'removed %s (branch %s kept)\n' "$path" "$name"
+}
+
+case "${1:-}" in
+  new) shift; cmd_new "$@" ;;
+  setup) shift; cmd_setup "$@" ;;
+  open) shift; cmd_open "$@" ;;
+  path) shift; printf '%s/%s\n' "$(wt_base)" "${1:?usage: wt path <branch>}" ;;
+  list) git worktree list ;;
+  rm) shift; cmd_rm "$@" ;;
+  ""|-h|--help|help) usage ;;
+  *) usage >&2; exit 2 ;;
+esac

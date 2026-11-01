@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(~/Developer/ai-god/bin/push-ai-god)",
+      "Bash(/Users/vnahornyi/Developer/ai-god/bin/push-ai-god)"
+    ],
+    "deny": [
+      "Bash(git push)",
+      "Bash(git push:*)",
+      "Bash(git -C * push:*)"
+    ]
+  },
+  "enabledPlugins": {
+    "tempad-dev@tempad-dev": true
+  },
+  "extraKnownMarketplaces": {
+    "tempad-dev": {
+      "source": {
+        "source": "github",
+        "repo": "ecomfe/tempad-dev",
+        "sparsePaths": [
+          ".claude-plugin",
+          "agent-plugin/targets/claude"
+        ]
+      }
+    }
+  },
+  "effortLevel": "medium",
+  "switchModelsOnFlag": false
+}

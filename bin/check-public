@@ -1,0 +1,229 @@
+#!/usr/bin/env python3
+"""Leak gate for the public ai-god tree.
+
+  check-public                  scan every tracked and staged file of the public repo
+  check-public --staged         scan only staged files (pre-commit)
+  check-public --range A..B     scan files changed in a commit range (push)
+  check-public PATH...          scan the given files
+  check-public --self-test      run the built-in cases
+
+Denylist syntax: one case-insensitive regex per line; `!regex` skips public lines that match it;
+`~Name` marks an identifier as a library or generic name the project-identifier pass ignores.
+
+Generic rules always run. In the owner's clone (`local/` is a git repo: the private overlay) the private
+`local/public-denylist.txt` must exist — the scan refuses without it — and identifiers defined in
+the project checkouts named by `local/projects/*/checkout` are flagged too. A stranger's clone runs
+the generic rules only. Prints `file:line: rule: match`; exits 1 on any hit.
+"""
+import os
+import re
+import subprocess
+import sys
+import tempfile
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OVERLAY = os.path.join(REPO, "local")
+DENYLIST = os.path.join(OVERLAY, "public-denylist.txt")
+
+# The path of this repo inside a home directory names only the public GitHub handle.
+HOME_PATH = re.compile(r"/(?:Users|home)/[A-Za-z0-9._-]+/(?!Developer/ai-god/)")
+EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,}")
+EMAIL_OK = re.compile(r"(?:^|\.)(?:example\.(?:com|org|net)|users\.noreply\.github\.com|anthropic\.com)$")
+PR_REF = re.compile(r"\b[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+#\d+|\b(?:PR|pull|on|in)\s+#\d{2,}\b")
+TICKET = re.compile(r"\b([A-Z][A-Z0-9]{1,9})-\d{2,}\b")
+TICKET_OK = re.compile(r"^(?:BR|ABC|XYZ|PROJ|REV|UTF|ISO|RFC|AC|E\d|P\d|S\d|C\d|M\d|Q\d)$")
+IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*(?:[.-][A-Za-z0-9_]+)*")
+DEFINITION = re.compile(r"(?:function|const|let|class|type|interface|enum)\s+([A-Za-z_]\w*)")
+CODE_EXT = (".ts", ".tsx", ".js", ".jsx")
+TEXT_EXT = (".md", ".json", ".sh", ".py", ".rules", ".txt", ".yaml", ".yml", ".toml", "")
+
+
+def words(identifier):
+    if "_" in identifier and identifier.upper() == identifier:
+        return len([w for w in identifier.split("_") if w])
+    return len(re.findall(r"[A-Z]?[a-z0-9]+|[A-Z]+(?![a-z])", identifier))
+
+
+def distinctive(identifier):
+    """Project-specific enough to flag: three or more words, or SCREAMING_CASE with two."""
+    if "_" in identifier and identifier.upper() == identifier:
+        return words(identifier) >= 2
+    return words(identifier) >= 3
+
+
+def load_denylist(path):
+    """Regex per line; `!regex` skips matching lines; `~Name` marks a library/generic identifier."""
+    deny, allow, known = [], [], set()
+    for raw in open(path, encoding="utf-8"):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("~"):
+            known.add(line[1:])
+        elif line.startswith("!"):
+            allow.append(re.compile(line[1:], re.IGNORECASE))
+        else:
+            deny.append(re.compile(line, re.IGNORECASE))
+    return deny, allow, known
+
+
+def project_identifiers(overlay):
+    """Identifiers defined in the developer's project checkouts, plus dashed file names."""
+    found = set()
+    projects = os.path.join(overlay, "projects")
+    if not os.path.isdir(projects):
+        return found
+    for name in sorted(os.listdir(projects)):
+        pointer = os.path.join(projects, name, "checkout")
+        if not os.path.isfile(pointer):
+            continue
+        checkout = os.path.expanduser(open(pointer, encoding="utf-8").read().strip())
+        if not os.path.isdir(checkout):
+            print(f"check-public: skip project {name}: {checkout} not found", file=sys.stderr)
+            continue
+        files = subprocess.run(["git", "-C", checkout, "ls-files"], capture_output=True,
+                               text=True, check=True).stdout.splitlines()
+        for rel in files:
+            base = os.path.basename(rel)
+            if "-" in base and base.endswith(CODE_EXT):
+                found.add(base)
+            if not rel.endswith(CODE_EXT) or "node_modules/" in rel or rel.endswith(".d.ts"):
+                continue
+            try:
+                text = open(os.path.join(checkout, rel), encoding="utf-8", errors="ignore").read()
+            except OSError:
+                continue
+            found.update(i for i in DEFINITION.findall(text) if distinctive(i))
+    return found
+
+
+def scan_text(path, text, deny, allow, idents):
+    hits = []
+    for number, line in enumerate(text.splitlines(), 1):
+        if any(a.search(line) for a in allow):
+            continue
+        for rule, match in rule_matches(line, deny, idents):
+            hits.append(f"{path}:{number}: {rule}: {match}")
+    return hits
+
+
+def rule_matches(line, deny, idents):
+    m = HOME_PATH.search(line)
+    if m:
+        yield "home-path", m.group(0)
+    for m in EMAIL.finditer(line):
+        local_part, domain = m.group(0).split("@", 1)
+        if local_part != "git" and not EMAIL_OK.search(domain):
+            yield "email", m.group(0)
+    for m in PR_REF.finditer(line):
+        yield "pr-ref", m.group(0)
+    for m in TICKET.finditer(line):
+        if not TICKET_OK.match(m.group(1)):
+            yield "ticket", m.group(0)
+    for pattern in deny:
+        m = pattern.search(line)
+        if m:
+            yield "denylist", m.group(0)
+    if idents:
+        for token in set(IDENT.findall(line)):
+            if token in idents:
+                yield "project-identifier", token
+
+
+def git_files(args):
+    out = subprocess.run(["git", "-C", REPO] + args, capture_output=True, text=True, check=True)
+    return [f for f in out.stdout.splitlines() if f]
+
+
+def target_files(argv):
+    if not argv:
+        return sorted(set(git_files(["ls-files"]) + git_files(["diff", "--cached", "--name-only",
+                                                               "--diff-filter=ACMR"])))
+    if argv[0] == "--staged":
+        return git_files(["diff", "--cached", "--name-only", "--diff-filter=ACMR"])
+    if argv[0] == "--range":
+        return git_files(["diff", "--name-only", "--diff-filter=ACMR", argv[1]])
+    return [os.path.relpath(os.path.abspath(p), REPO) for p in argv]
+
+
+def read_target(rel, ref):
+    """Content at `ref` ("" = the index, "HEAD" = the last commit); None = the working tree."""
+    if ref is not None:
+        out = subprocess.run(["git", "-C", REPO, "show", f"{ref}:{rel}"], capture_output=True)
+        return out.stdout.decode("utf-8", errors="ignore") if out.returncode == 0 else None
+    full = os.path.join(REPO, rel)
+    if not os.path.isfile(full):
+        return None
+    return open(full, encoding="utf-8", errors="ignore").read()
+
+
+def run(argv):
+    owner = os.path.isdir(os.path.join(OVERLAY, ".git"))
+    deny, allow, idents = [], [], set()
+    if owner:
+        if not os.path.isfile(DENYLIST):
+            print("check-public: the local/ overlay has no public-denylist.txt — refusing",
+                  file=sys.stderr)
+            return 1
+        deny, allow, known = load_denylist(DENYLIST)
+        idents = project_identifiers(OVERLAY) - known
+    ref = {"--staged": "", "--range": "HEAD"}.get(argv[0]) if argv else None
+    hits = []
+    for rel in target_files(argv):
+        if rel.startswith("local/") or not rel.endswith(TEXT_EXT) and os.path.splitext(rel)[1]:
+            continue
+        text = read_target(rel, ref)
+        if text is not None:
+            hits += scan_text(rel, text, deny, allow, idents)
+    for hit in hits:
+        print(hit)
+    mode = "owner" if owner else "generic rules only (no local/ overlay)"
+    print(f"check-public: {len(hits)} hit(s), {mode}", file=sys.stderr)
+    return 1 if hits else 0
+
+
+def self_test():
+    deny = [re.compile(r"acme\s*corp", re.IGNORECASE)]
+    allow = [re.compile(r"allowed-line", re.IGNORECASE)]
+    idents = {"pickWidgetInFrame", "widget-card.tsx"}
+    # Built from pieces so this file does not trip its own scan.
+    leaks = {
+        "home-path": "see /" + "Users/someone/work/app",
+        "email": "mail jane.doe" + "@company.io",
+        "pr-ref": "fixed in org/app" + "#123",
+        "ticket": "closes SHOP" + "-2933",
+        "denylist": "Acme Corp standard",
+        "project-identifier": "calls pickWidgetInFrame() here",
+    }
+    clean = ("PROJ-123 BR-1 user@example.com /Users/x/Developer/ai-god/bin/push-ai-god "
+             "colour #333 useState isLoading allowed-line acme corp")
+    failures = []
+    for rule, text in leaks.items():
+        got = [h.split(": ")[1] for h in scan_text("t.md", text, deny, allow, idents)]
+        if rule not in got:
+            failures.append(f"{rule}: not detected in {text!r} (got {got})")
+    got = scan_text("t.md", clean, deny, allow, idents)
+    if got:
+        failures.append(f"clean line flagged: {got}")
+    if not distinctive("pickWidgetInFrame") or distinctive("isLoading") or not distinctive("MAX_RETRY_COUNT"):
+        failures.append("distinctive() classification wrong")
+    with tempfile.TemporaryDirectory() as tmp:
+        os.makedirs(os.path.join(tmp, "projects", "p"))
+        checkout = os.path.join(tmp, "checkout")
+        os.makedirs(checkout)
+        subprocess.run(["git", "init", "-q", checkout], check=True)
+        open(os.path.join(checkout, "widget-card.tsx"), "w").write("export function pickWidgetInFrame() {}\n")
+        subprocess.run(["git", "-C", checkout, "add", "."], check=True)
+        open(os.path.join(tmp, "projects", "p", "checkout"), "w").write(checkout)
+        found = project_identifiers(tmp)
+        if not {"pickWidgetInFrame", "widget-card.tsx"} <= found:
+            failures.append(f"project_identifiers missed definitions: {found}")
+    for f in failures:
+        print("FAIL", f)
+    print(f"self-test: {len(failures)} failure(s)")
+    return 1 if failures else 0
+
+
+if __name__ == "__main__":
+    args = sys.argv[1:]
+    sys.exit(self_test() if args == ["--self-test"] else run(args))

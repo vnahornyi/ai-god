@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Leak gate for public commits: nothing from the local overlay may enter the public tree.
+set -euo pipefail
+exec "$(git rev-parse --show-toplevel)/bin/check-public" --staged

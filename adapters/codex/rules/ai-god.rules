@@ -1,0 +1,23 @@
+# Codex execpolicy for the ai-god setup. Linked into ~/.codex/rules by install.sh.
+# Check with: codex execpolicy check --rules adapters/codex/rules/ai-god.rules git push
+
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "forbidden",
+    justification = "Pushing belongs to the developer. Hand them the git push command instead.",
+    match = [["git", "push"], ["git", "push", "--force-with-lease", "origin", "main"]],
+    not_match = [["git", "status"], ["git", "pull"]],
+)
+
+# The one sanctioned push: fast-forward of ai-god main, run after the developer approved the commit.
+prefix_rule(
+    pattern = [["/Users/vnahornyi/Developer/ai-god/bin/push-ai-god", "~/Developer/ai-god/bin/push-ai-god"]],
+    decision = "allow",
+    justification = "AGENTS.md Git rule 7: ai-god commits approved in chat are pushed by the agent.",
+)
+
+prefix_rule(
+    pattern = ["gh", "repo", "sync"],
+    decision = "forbidden",
+    justification = "Updates a remote. Pushing belongs to the developer.",
+)
