@@ -117,7 +117,7 @@ Corollary for mock factories: `jest.mock(path, () => { const { useEffect } = req
 
 The general rule: when a result surprises you, the next step is to make the harness prove it ran your code — one log line inside the callback under test — not to start editing the code.
 
-**A regression test that never failed proves nothing.** For a bug fix, run the new test against the pre-fix code — `git stash`, or restore the one file from `HEAD` — and watch it fail for the reason you claim. A test written after the fix, from the same mental model as the fix, agrees with it by construction; the red run is the only evidence that it pins the defect rather than the implementation.
+**A regression test that never failed proves nothing.** For a bug fix, run the new test against the pre-fix code — undo only your fix lines, or run it in a temporary worktree at `HEAD`; never `git stash`, which also hides the developer's other uncommitted work — and watch it fail for the reason you claim. When you force the red by editing code or a fixture instead, diff against the untouched copy to prove the edit is what made it fail. A test written after the fix, from the same mental model as the fix, agrees with it by construction; the red run is the only evidence that it pins the defect rather than the implementation.
 
 **When the harness disables the mechanism your fix depends on, the fix is untested by construction.** If the project's test env short-circuits the loading hook, the effect, the timer or the request layer, then a fix keyed to `isLoading` is inert in every test: the suite stays green whether the fix is there or not.
 
@@ -132,4 +132,5 @@ Untestable-by-harness is a fact to disclose, not a constraint to design around.
 - Heavy `beforeEach` setup shared by tests that need different things → each test should be readable on its own.
 - Asserting on `toHaveBeenCalledTimes` for internal functions → implementation coupling.
 - Test passes when the feature is deleted → it's asserting nothing.
+- Tautological assertion — the expected value is computed by the code under test or copied from its implementation (`expect(format(x)).toBe(format(x))`, a mock asserted to return what it was told to return) → it agrees by construction. Write the expected value as a literal from the requirement.
 - More lines of mock than of test → the unit under test has too many dependencies; that's a design signal, not a testing problem.

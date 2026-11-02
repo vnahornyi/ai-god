@@ -29,10 +29,12 @@ repo and handed back for approval like any other change.
 | `skill` | No rule covers it, or the rule as written is ambiguous, contradicts another, or produces this code when followed literally | The skill file and section |
 | `plan` | The plan left the decision open, or decided it wrong | `wf-plan` / the planning session |
 | `spec` | The ticket or docs miss or contradict the requirement | The product owner |
+| `check` | A mechanical violation that a lint rule, type, test or hook in the project could catch | The project's checks |
 
-Between `model` and `skill`, quote the rule line and ask: *would a careful reader of exactly this text
-write the code under review?* Yes → `skill`. No → `model`. An escalation after a failed meaningful
-attempt counts as one `model` signal.
+Test `check` first: a mechanical finding is `check` even when a rule text also covers it, because
+a check stops it under every model and skill. Between `model` and `skill`, quote the rule line and
+ask: *would a careful reader of exactly this text write the code under review?* Yes → `skill`. No →
+`model`. An escalation after a failed meaningful attempt counts as one `model` signal.
 
 ## Step 2 — Log one row
 
@@ -48,8 +50,8 @@ metadata:
   type: project
 ---
 
-| Date | Task | Implementer | Plan | Dev est. h | Actual h | P0–P2 model | P0–P2 skill | P0–P2 plan | P0–P2 spec | P3 | Rejected | Escalations | Note |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Date | Task | Implementer | Plan | Dev est. h | Actual h | P0–P2 model | P0–P2 skill | P0–P2 plan | P0–P2 spec | P0–P2 check | P3 | Rejected | Escalations | Note |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 ```
 
 `Dev est. h` is the plan's Development line from `wf-estimate`, and `Actual h` the developer's figure;
@@ -71,7 +73,10 @@ developer's rule from 2026-10-14:
 | Fewer than five rows | Per-task advice only; say "window n/5" |
 
 A `plan` finding is advice for the next `wf-plan`, whatever the count. A `spec` finding is a question
-for the product owner, not a model or skill signal.
+for the product owner, not a model or skill signal. A `check` finding, whatever the count, is advice
+to add that check to the project repo: read its existing lint, type and test configuration first,
+then name the concrete rule, type or test and where it goes — a task of its own under the Git rules,
+not a skill line. Skill-change advice follows `docs/writing-for-agents.md` in the ai-god repo.
 
 ## Output
 
@@ -79,7 +84,7 @@ To the developer, in their language (Ukrainian by default), short:
 
 ```
 Implementer: <model · effort>   Window: n/5
-Findings: model a · skill b · plan c · spec d · P3 e · rejected f
+Findings: model a · skill b · plan c · spec d · check g · P3 e · rejected f
 Advice: <one line per action, with the file or mapping named>
 ```
 

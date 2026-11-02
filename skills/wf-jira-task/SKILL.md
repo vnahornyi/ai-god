@@ -10,7 +10,9 @@ time goes**. It holds no file paths and no code — that level lives in the `wf-
 
 ## Start — one question block
 
-Ask together, once:
+Ask together, once. Give each question a recommended answer drawn from the context (the developer's
+language, an existing ticket or plan); "yes" accepts every recommendation. Do not ask what the
+ticket, the plan or the repo already answers.
 
 1. Language: **EN** or **UA**?
 2. Type: Story / Task / Bug; project key; epic or parent, if any.
@@ -37,6 +39,12 @@ Fill `references/ticket-template.md` in the chosen language and show it in the c
 - **Share of the estimate** per block only when there is a number the developer gave or accepted;
   otherwise drop that column.
 - A task of `18`+ always carries the work plan (company rule).
+
+When the work needs several tickets, split it into **vertical slices**: each ticket delivers one
+behaviour a user or QA can observe, end to end (contract, logic, UI, tests), never one layer. Name
+the blocking edges ("blocked by: <ticket>"). A wide refactor goes expand → migrate → contract: add
+the new shape beside the old, move consumers over, then remove the old; each ticket ships green on
+its own.
 
 ## Creating it in Jira
 

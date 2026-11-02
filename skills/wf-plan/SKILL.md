@@ -18,7 +18,11 @@ Hard rules:
 - **No guessed facts.** Every path, symbol, endpoint, command and convention is verified in the repo
   or the docs. What could not be verified is marked `⚠️ UNVERIFIED` — and becomes a stop condition
   for the implementer.
-- **Ask at the checkpoints below; batch everything else** into one question block at the end.
+- **Ask in rounds, never for facts.** What the repo or the docs can answer is looked up, not asked.
+  Each checkpoint below is one round; the remaining questions form the closing round. In a round,
+  questions are numbered, each carries a recommended answer with its reason, and each is worded so
+  that "yes" accepts the recommendation. A question whose answer depends on another waits for the
+  next round.
 
 Capability: FRONTIER_REASONING (see `ai-workflow`). Plan file lifecycle: `ai-workflow` → §4.
 
