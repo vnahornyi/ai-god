@@ -95,8 +95,9 @@ Quote code, identifiers, commands and verbatim sources in their original languag
 
 Nothing is posted on the developer's behalf: no comment, reply, review, approval, reaction or
 resolved thread on a PR, an issue tracker or a chat. The only writes allowed outside the repo are the
-title and description of the developer's own PR and of the developer's own tracker issue, each after
-the developer has seen the exact text. Review output explains each point — what is claimed, whether
+title and description of the developer's own PR and of the developer's own tracker issue, and
+creating a tracker issue when the developer explicitly asks for it — each after the developer has
+seen the exact text. Review output explains each point — what is claimed, whether
 it holds, the evidence — and the developer writes any comment themselves. Where the runtime has a
 permission layer, `gh pr comment`, `gh pr review` and `gh issue comment` are also denied there.
 
