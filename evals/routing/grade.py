@@ -7,7 +7,7 @@ A runner table row is `| # | stage skill | domain skills | other skills |`. A ca
 run's stage skills match the key (or one accepted alternative; for "A + B" the stage is A and B must be
 loaded in any column), every required domain skill appears
 anywhere in the row, and no must-not skill appears anywhere in the row. A reference file path
-(`<skill>/references/<file>.md`, or `<skill> references/<file>.md`) is a read of that file, not a load
+(`<skill>/references/<file>.md`, `<skill> references/<file>.md`, or `<skill> (references only)`) is a read of that file, not a load
 of the skill, and is removed before matching; the router tells some stages to read another skill's
 reference directly. Case 27's maintenance-file check cannot be read from the table; it is graded on
 the skill columns only and marked `*`.
@@ -26,7 +26,7 @@ def cells(line):
     return [c.strip() for c in line.strip().strip("|").split("|")]
 
 
-REFERENCE = re.compile(r"\b[a-z-]+(?:/| )references/[\w.-]+\.md|\(references/[^)]*\)")
+REFERENCE = re.compile(r"\b[a-z-]+(?:/| )references/[\w.-]+\.md|\(references/[^)]*\)|\b[a-z-]+ \(references[^)]*\)")
 
 
 def names(text):

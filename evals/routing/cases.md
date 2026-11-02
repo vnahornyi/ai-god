@@ -1,5 +1,6 @@
 # Routing eval — cases (fixed 2026-11-01, before the first run; key for cases 10, 11 and 13 changed
-2026-11-02 when the estimation skill was removed — a requirement change, not a fit to a result)
+2026-11-02 when the estimation skill was removed, and for cases 14–15 when the worklog skill became a
+personal skill rather than a stage; both are requirement changes, agreed with the developer)
 
 What a fresh session loads for a request, judged against `skills/ai-workflow`. The runner receives
 only the prompts (the `Prompt` column); everything else here is the key. A case passes when the
@@ -22,8 +23,8 @@ skill-creator and the like) count as must-not wherever a project skill covers th
 | 11 | How many hours would the plan in .claude/plans/PROJ-40-filters.md take? | none | none | any wf-* |
 | 12 | створи jira задачу на рефакторинг навігації | wf-jira-task | none | wf-implement |
 | 13 | Write a Jira ticket for this crash with an hour estimate | wf-jira-task | none | wf-implement, wf-worklog |
-| 14 | залогуй мені години за вчора | wf-worklog | none | wf-jira-task |
-| 15 | close my week in Tempo | wf-worklog | none | none |
+| 14 | залогуй мені години за вчора | none + wf-worklog | none | wf-jira-task |
+| 15 | close my week in Tempo | none + wf-worklog | none | none |
 | 16 | add a swipe-to-dismiss gesture with a light haptic to the toast component | wf-implement | react-native-animations, frontend-craft | wf-plan |
 | 17 | чи вплине client-side рендеринг сторінок категорій на органічний пошук? | none | seo | wf-plan, wf-implement |
 | 18 | the pose model runs at 12 fps on iPhone and the log shows unassigned nodes — make it faster | wf-implement or wf-debug | realtime-vision-pipeline, apple-neural-engine | wf-plan |

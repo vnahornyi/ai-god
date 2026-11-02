@@ -22,8 +22,12 @@ instead of drafting a reply. Routing key for cases 10, 11 and 13 changed with th
 Every model routes Ukrainian prompts correctly with English-only triggers. The strict misses are not
 wrong routes: in 14–15 the worklog skill is loaded but, now that it is a personal skill and not a
 stage in the router, two models list it as "other"; in 7–8 Haiku names the guard references in a
-form the grader does not strip. Changing the key for 14–15 or the grader for the Haiku form needs
-the developer's agreement (`evals/README.md`: never edit a rubric to fit a result).
+form the grader does not strip. With the developer's agreement the key for 14–15 became `none + wf-worklog`
+(the worklog skill is personal, not a stage; it must be loaded, in any column) and `grade.py` reads
+`<skill> (references only)` as a reference read. Regraded: **29 / 29 / 29**; the only miss is case 26
+on every mapping. Earlier run tables are not kept, so they were not regraded; neither change can
+move them — a `wf-worklog` in the stage column still passes the new key, and no earlier run used the
+"(references only)" form.
 
 ## E1–E5
 
