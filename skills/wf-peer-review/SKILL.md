@@ -12,7 +12,8 @@ project's linter or rules do not require.
 Capability: STRONG_GENERAL; FRONTIER_REASONING for security, data-loss or architectural PRs.
 Read `wf-review` → `references/review-contract.md` (scope, severity, finding contract, second pass)
 and `references/ai-review-guard.md` — run it on your own candidates and on every bot comment already
-on the PR, and run its learning loop once the developer has answered those comments.
+on the PR — and `references/ai-review-replies.md` for drafting replies and for the learning loop
+once the developer has answered those comments.
 
 ## Steps
 

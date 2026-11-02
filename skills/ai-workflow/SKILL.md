@@ -19,8 +19,8 @@ adapter).
 | "чому падає", "не працює", "debug", a crash, a failing or flaky test, slower or janky since a change — the cause is unknown | `wf-debug`; the fix it leads to is staged through `wf-implement` Phase 2 | `wf-plan` |
 | "зроби ревʼю", review my diff / my PR | `wf-review` | planning, implementation, estimate, worklog skills |
 | Automatically, once the developer has decided on the `wf-review` findings of their own task | `wf-retro` | planning, implementation, estimate, worklog skills |
-| "пройдись по PR", someone else's PR | `wf-peer-review` (it reads `wf-review` → `references/ai-review-guard.md` directly) | `wf-review` itself; planning, implementation, estimate, worklog skills |
-| "глянь коментарі", "що відповісти", review threads or a bot's review on the developer's own PR | `wf-review` → `references/ai-review-guard.md` (and `frontend-craft` → acting on review comments for React/RN) | planning, implementation, estimate, worklog skills |
+| "пройдись по PR", someone else's PR | `wf-peer-review` (it reads `wf-review` → `references/ai-review-guard.md` and `references/ai-review-replies.md` directly) | `wf-review` itself; planning, implementation, estimate, worklog skills |
+| "глянь коментарі", "що відповісти", review threads or a bot's review on the developer's own PR | `wf-review` → `references/ai-review-guard.md` and `references/ai-review-replies.md` (and `frontend-craft` → acting on review comments for React/RN) | planning, implementation, estimate, worklog skills |
 | "оціни", "скільки годин" | `wf-estimate` | review, worklog skills |
 | "створи jira задачу", "опиши таску" | `wf-jira-task` | implementation, review, worklog skills; `wf-estimate` only when a number is asked |
 | "залогуй", "закрий день", Tempo, timesheet | `wf-worklog` | everything else |
@@ -43,7 +43,7 @@ Load a domain skill only when the active stage skill or the actual files in scop
 | Organic-search impact of a web change | `seo` |
 | A background run, parallel work in another checkout, or "worktree" / switching worktrees / opening one in VS Code | `worktree` |
 | On-device ML speed, Core ML / ANE, camera-rate vision | `apple-neural-engine`, `realtime-vision-pipeline` |
-| Any review output — `wf-review`, `wf-peer-review`, the runtime's review engine, or an AI reviewer's comments on a PR | `wf-review` → `references/ai-review-guard.md`: every finding or comment passes its gates before it reaches the developer; its learning loop runs once the developer has answered |
+| Any review output — `wf-review`, `wf-peer-review`, the runtime's review engine, or an AI reviewer's comments on a PR | `wf-review` → `references/ai-review-guard.md`: every finding or comment passes its gates before it reaches the developer; `references/ai-review-replies.md` → learning loop runs once the developer has answered |
 | Project-specific skills | Whatever the project exposes (local overlay `projects/<project>/skills`, linked into the project) |
 
 ## 3. Stage → capability class
