@@ -102,7 +102,7 @@ Claude Code skills docs (rules that must hold every time belong in a hook).
 Reuse a compact term the model already knows (*tracer bullet*, *seam*, *red* for a test that fails on
 the bug) instead of restating a definition at every site; the repeated word anchors the behaviour.
 Coin a new term only with a definition, and keep each term in one sense across the repo
-(`docs/glossary.md` when it exists).
+(`docs/glossary.md`).
 
 State the target behaviour. A prohibition puts the forbidden behaviour into context; keep prohibitions
 for hard guardrails (the Git rules) and pair each with what to do instead.

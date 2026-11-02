@@ -77,6 +77,8 @@ PLANNING ─▶ IMPLEMENTING ─▶ INDEPENDENT REVIEW ─▶ APPROVED FIXES (if
 | `bin/token-report` | Always-loaded, per-skill and per-flow instruction sizes (overlay names redacted) | run by path | run by path | run by path |
 | `.githooks/pre-commit` | Runs `bin/check-public --staged` and `bin/lint-skills` (`core.hooksPath`, set by `install.sh`) | — | — | — |
 | `evals/` | Fixed tasks, rubrics and results for measuring skill changes (`evals/README.md`) | not linked | not linked | not linked |
+| `decisions/` | Why settled choices were made, and rejected ideas with the condition that reopens them | not linked | not linked | not linked |
+| `docs/` | `writing-for-agents.md` (the writing standard) and `glossary.md` (workflow terms) | not linked | not linked | not linked |
 | `local/projects/<project>/rules.md` | Always-on project rules | read via `AGENTS.md` → Project layer | same | same |
 | `local/projects/<project>/skills/<name>/` | Project skills | `~/Developer/<project>/.claude/skills/<name>` (only if git-ignored there) | `~/.codex/skills/<name>` | `~/.copilot/skills/<name>` |
 | `local/projects/<project>/checkout` | Path of the project checkout; `bin/check-public` reads its identifiers | — | — | — |

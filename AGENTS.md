@@ -12,6 +12,8 @@ This file is for work on this repo itself. The instructions every session gets, 
 | How a runtime does it; concrete model names | `adapters/<runtime>/` |
 | Anything private (memory, project layer, company standards, personal settings) | `local/` — its own repo, never copied here |
 | Measurements | `evals/` |
+| Why a settled choice was made; ideas rejected and when to reopen them | `decisions/` |
+| Workflow terms | `docs/glossary.md` |
 
 A meaning written in two homes is a bug: keep the one the table names and point to it.
 
