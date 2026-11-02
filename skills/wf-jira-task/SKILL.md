@@ -1,6 +1,6 @@
 ---
 name: wf-jira-task
-description: Draft a Jira ticket in English or Ukrainian (developer's choice) with context, scope, acceptance criteria and a human-readable work plan that shows what the estimated time is spent on. Use for "створи jira задачу", "опиши таску", or turning a plan into a ticket. Creates the issue in Jira only on the developer's explicit "create". Do not use for implementation plans or estimates.
+description: Use when the developer asks for a Jira ticket — "створи jira задачу", "опиши таску", or turning a plan into a ticket.
 ---
 
 # wf-jira-task — a ticket people can read

@@ -1,6 +1,6 @@
 ---
 name: seo
-description: Technical SEO for websites and ecommerce — crawlability, indexing, JS rendering, pagination, faceted navigation, structured data, web performance. Use when a developer asks how a site or code change affects organic search. Do not use for content strategy or paid campaigns.
+description: Use when the question is how a website or a code change affects organic search — crawling, indexing, JavaScript rendering, pagination, faceted navigation, structured data, Core Web Vitals.
 ---
 
 # Technical SEO for web developers

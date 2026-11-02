@@ -43,7 +43,9 @@ while implementation is active; no state, handoff, segment, review, or escalatio
 `global/AGENTS.md` tells every runtime to load `ai-workflow` first. The router names one stage skill and
 only the domain skills its triggers allow — "review this PR" loads `wf-review` (+ `frontend-craft`
 review mode for React), not planning, estimation or worklog. Skill descriptions are always in
-context, so they stay short and say when **not** to load.
+context, so they stay short and say only when to use the skill, never how it works; routing between
+neighbouring skills lives in the router's table (`docs/writing-for-agents.md` → Pointers and
+descriptions). The routing eval in `evals/routing/` measures it.
 The workflow never recommends another runtime; independence comes from a fresh session.
 
 ```

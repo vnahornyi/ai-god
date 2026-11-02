@@ -1,6 +1,6 @@
 ---
 name: design-patterns
-description: The 22 GoF design patterns as they look in modern TypeScript and React/React Native — symptom that justifies each, the idiomatic shape, and when it is overkill. Use when a plan, diff or question names a pattern, or code shows a growing switch, prop explosion, tangled communication, an SDK wrapper, undo/redo, a state machine or a pipeline. Do not load by default for planning or review.
+description: Use when a plan, diff or question names a GoF design pattern, or code shows a growing switch over types, a prop explosion, tangled component communication, an SDK wrapper, undo/redo, a state machine or a pipeline.
 ---
 
 # Design patterns — for TS/JS and React

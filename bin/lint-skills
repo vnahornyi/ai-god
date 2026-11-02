@@ -58,6 +58,8 @@ def lint_skill(skill_dir, router_text, root):
     desc = keys.get("description", "")
     if not desc or len(desc) > MAX_DESC or "<" in desc or ">" in desc:
         errors.append(f"{where}:1: description must be 1–{MAX_DESC} chars without < or > (got {len(desc)})")
+    if re.search(r"^description: (?![\'\"]).*(?:: | #)", text.split("\n---\n", 1)[0], re.M):
+        errors.append(f"{where}:1: description is not a valid plain YAML scalar (': ' or ' #'); reword or quote it")
     if body.count("\n") > MAX_LINES:
         errors.append(f"{where}:1: body has {body.count(chr(10))} lines (max {MAX_LINES})")
     if len(body) > MAX_CHARS:
@@ -92,6 +94,10 @@ def run(root):
     for skill in sorted(glob.glob(os.path.join(root, "local", "projects", "*", "skills", "*", ""))):
         if os.path.exists(os.path.join(skill, "SKILL.md")):
             warnings += [w for w in lint_skill(skill.rstrip("/"), None, root) if "tool or model name" not in w]
+    if router is not None:
+        for name in sorted(set(re.findall(r"`(wf-[a-z0-9-]+)`", router))):
+            if not os.path.exists(os.path.join(root, "skills", name, "SKILL.md")):
+                errors.append(f"{os.path.relpath(router_path, root)}:1: the router names `{name}`, which is not a skill")
     for e in errors:
         print(e)
     for w in warnings:
@@ -109,6 +115,7 @@ def self_test():
         "broken link": ("bad-link", "---\nname: bad-link\ndescription: d\n---\nsee [x](references/none.md)\n"),
         "router does not name": ("unrouted", "---\nname: unrouted\ndescription: d\n---\nbody\n"),
         "tool or model name": ("leaky", "---\nname: leaky\ndescription: d\n---\nuse the Skill tool\n"),
+        "plain YAML scalar": ("bad-yaml", "---\nname: bad-yaml\ndescription: Use for hours: x\n---\nbody\n"),
     }
     failures = []
     with tempfile.TemporaryDirectory() as tmp:

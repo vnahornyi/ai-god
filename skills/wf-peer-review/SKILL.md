@@ -1,6 +1,6 @@
 ---
 name: wf-peer-review
-description: Walk through someone else's pull request for the developer — report only what deserves attention, skip everything else, then give a step-by-step route through this PR's own files so the developer can review it themselves. Use for "пройдись по PR", "глянь чужий PR", a colleague's PR number or URL. Never posts comments unless explicitly told. Do not use for the developer's own change (wf-review).
+description: Use when the developer asks to go through someone else's pull request — "пройдись по PR", "глянь чужий PR", a colleague's PR number or URL.
 ---
 
 # wf-peer-review — what deserves attention, and how to read the rest

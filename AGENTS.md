@@ -35,4 +35,5 @@ A meaning written in two homes is a bug: keep the one the table names and point 
   skill-authoring guidance) and ≤ 5,000 tokens, counted as 20,000 characters, because Claude Code
   keeps only the first 5,000 tokens of an invoked skill after compaction. Reference files over 100
   lines open with `## Contents`. Put the rules that matter most at the top of a body.
-- Wording rules for skills: `README.md` → "Writing agent-neutral skills".
+- How to write and change anything an agent reads: `docs/writing-for-agents.md`. Agent-neutral
+  wording: `README.md` → "Writing agent-neutral skills".

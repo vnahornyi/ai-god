@@ -1,6 +1,6 @@
 ---
 name: wf-estimate
-description: Advisory hour estimate for one task, written only to the chat — raw development plus regression pass, device testing and review rounds, snapped to the company gradation. Use when the developer asks "оціни", "скільки годин" or wants a number for a plan or ticket. Never writes into plans, tickets or files. Do not use for planning or ticket text.
+description: Use when the developer asks for hours — "оціни", "скільки годин", or a number for a plan or ticket. The estimate goes to the chat only.
 ---
 
 # wf-estimate — advice, not a commitment

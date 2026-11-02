@@ -1,6 +1,6 @@
 ---
 name: figma-inspect
-description: Read a Figma frame so that no layer, state or interaction is missed — a full layer inventory and a coverage table for building the UI skeleton, with zero style values unless the developer assigned visual work. Use whenever a task has a Figma link or UI that must follow a design, in planning or implementation. Do not use for pixel QA, design critique or editing the Figma file.
+description: Use when a task has a Figma link or UI that must match a design, in planning or implementation, to inventory every layer, state and interaction before the skeleton is built.
 ---
 
 # Figma Inspect

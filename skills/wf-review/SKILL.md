@@ -1,6 +1,6 @@
 ---
 name: wf-review
-description: Independent review of the developer's own change — local diff, commit range or their PR — on top of the runtime's built-in code-review command, adding the task contract, the plan, project rules and style provenance. Use for "зроби ревʼю", "review my diff/PR" after implementation. Do not use for someone else's PR (that is wf-peer-review) or for fixing findings.
+description: Use when the developer asks to review their own change ("зроби ревʼю", "review my diff/PR", a staged diff, a commit range) or to answer review comments and bot reviews on their own PR.
 ---
 
 # wf-review — review your own change, cold

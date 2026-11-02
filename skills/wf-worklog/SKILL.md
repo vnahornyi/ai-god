@@ -1,6 +1,6 @@
 ---
 name: wf-worklog
-description: Reconstruct a day or week of worked hours per Jira ticket from git commits, Jira and Tempo, asking the developer about what commits cannot show, and audit time already logged. Use for "залогуй", "закрий день", "розкинь години", Tempo, timesheets, worklogs. Never pads hours. Do not use for estimates.
+description: Use when the developer asks to log or audit worked hours — "залогуй", "закрий день", "розкинь години", Tempo, timesheets.
 ---
 
 # Worklog Planner

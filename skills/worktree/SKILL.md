@@ -1,6 +1,6 @@
 ---
 name: worktree
-description: Work in git worktrees kept next to the repository — create one per branch, clone its git-ignored dependencies and local config copy-on-write, open and switch between them in VS Code, hand work back and remove them — with the `wt` script. Use when a task runs in the background or in parallel with the developer's own work, or the developer asks to work in a worktree, switch worktrees or open one in VS Code. Do not use for branching strategy or merge decisions.
+description: Use when a task runs in the background or in parallel with the developer's work, or the developer asks to create, switch, open in VS Code or remove a worktree.
 ---
 
 # worktree — parallel checkouts that are ready to run

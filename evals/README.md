@@ -2,7 +2,9 @@
 
 Small fixed tasks that measure whether a skill change helps the STRONG_GENERAL implementer, compared
 with FRONTIER_REASONING on the same task. Rerun after any change to `frontend-craft`, `wf-plan` or
-`wf-implement`; rerun E5 after any change to `react-native-animations`.
+`wf-implement`; rerun E5 after any change to `react-native-animations`; rerun E6 after any change to
+`wf-debug`; rerun the routing eval after any change to `ai-workflow`, a skill description or the
+global instructions' routing section.
 
 ## Layout
 
@@ -31,3 +33,18 @@ There is no repository to typecheck or test: skip Gate 2 commands and say so in 
 Write files only into <run dir>. Do not stage, commit, push or spawn agents.
 Finish with the Gate 3 report as your final message; do not write a report file.
 ```
+
+## Debugging fixtures (E6)
+
+`E6a`–`E6c` carry a small Node project in `src/` (and `CHANGELOG.md` for E6c). Copy the fixture's
+`src/` (and changelog) into each run directory first; the brief points at `task.md` and the run
+directory. Run once without the skill ("work as you normally would") as the baseline, then with
+`wf-debug` on STRONG_GENERAL and FRONTIER_REASONING. Add "The developer is away: do not wait for
+answers to questions, record them in the report."
+
+## Routing eval
+
+`evals/routing/cases.md` holds 30 prompts and the key; extract the prompt column into a file outside
+the repo and give each runner the brief at the bottom of `cases.md` (FRONTIER_REASONING,
+STRONG_GENERAL and the background mapping, one run each). Save each returned table and grade with
+`python3 evals/routing/grade.py <run>.md ...`.

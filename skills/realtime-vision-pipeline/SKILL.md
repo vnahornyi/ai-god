@@ -1,6 +1,6 @@
 ---
 name: realtime-vision-pipeline
-description: How a 30 fps on-device vision pipeline is built — detector/tracker split, crop from the previous frame, regression landmark heads, per-frame budgets, measuring first. Use when a model runs on every camera frame or fps is too low. Do not use for offline or server-side vision.
+description: Use when a vision model runs on every camera frame on device and the frame rate is too low, or such a pipeline is being designed.
 ---
 
 # Real-time vision on a phone

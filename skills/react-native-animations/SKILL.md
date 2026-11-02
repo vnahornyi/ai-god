@@ -1,6 +1,6 @@
 ---
 name: react-native-animations
-description: Design, implement and review React Native motion with Reanimated and Worklets — whether it should animate at all, gestures and velocity, springs and curves, haptics, scroll/layout transitions, loops, reduced motion, ports from web — keeping business decisions on the JS side and the timeline on the UI runtime. Use when motion or haptics are in scope and requested, or a diff under review adds or changes motion. Do not use for static UI.
+description: Use when React Native motion, gestures or haptics are requested (Reanimated, Gesture Handler, springs, layout or scroll transitions), or a diff under review adds or changes motion.
 ---
 
 # React Native animations

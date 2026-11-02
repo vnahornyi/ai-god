@@ -29,6 +29,9 @@ FLOWS = {
         "skills/frontend-craft/SKILL.md", "skills/frontend-craft/references/mode-plan.md",
         "skills/frontend-craft/references/problem-framing.md", "skills/ai-workflow/references/model-policy.md",
     ],
+    "debug": [
+        "skills/ai-workflow/SKILL.md", "skills/wf-debug/SKILL.md", "skills/wf-debug/references/loops-rn.md",
+    ],
     "implement (project)": [
         "skills/ai-workflow/SKILL.md", "skills/wf-implement/SKILL.md",
         "local/projects/*/skills/*-react-patterns/SKILL.md", "skills/frontend-craft/SKILL.md",

@@ -1,12 +1,13 @@
 ---
 name: ai-workflow
-description: Task router. Load it first for every task request (plan, implement, fix, review, PR walkthrough, estimate, Jira ticket, worklog, Figma) to decide which skills to load and which to skip, which capability class to use, and how the one disposable plan file lives. Not needed for a pure question that needs no tool use.
+description: Use first for every task request — plan, implement, fix, debug, review, PR walkthrough, estimate, Jira ticket, worklog, worktree — to pick the one stage skill, the domain skills and the capability class. A pure question that needs no tool use goes without it.
 ---
 
 # AI workflow — router
 
-Pick the stage, load only that stage's skill plus the domain skills its trigger names, and nothing
-else. Concrete models and runtime operations live in the runtime adapter (`AGENTS.md` → Runtime
+Without this router a session loads whatever skill a description resembles, or none, and skips the
+stage's discipline. Pick the stage, load only that stage's skill plus the domain skills its trigger
+names, and nothing else. Concrete models and runtime operations live in the runtime adapter (`AGENTS.md` → Runtime
 adapter).
 
 ## 1. Stage → skill
@@ -15,13 +16,16 @@ adapter).
 |---|---|---|
 | "сплануй", "plan TASK", task too large/ambiguous to start | `wf-plan` | `wf-estimate` (unless a number is asked), review, worklog skills |
 | "реалізуй план", "зроби", a direct small fix | `wf-implement` | planning, estimate, review skills |
+| "чому падає", "не працює", "debug", a crash, a failing or flaky test, slower or janky since a change — the cause is unknown | `wf-debug`; the fix it leads to is staged through `wf-implement` Phase 2 | `wf-plan` |
 | "зроби ревʼю", review my diff / my PR | `wf-review` | planning, implementation, estimate, worklog skills |
 | Automatically, once the developer has decided on the `wf-review` findings of their own task | `wf-retro` | planning, implementation, estimate, worklog skills |
-| "пройдись по PR", someone else's PR | `wf-peer-review` | planning, implementation, estimate, worklog skills |
+| "пройдись по PR", someone else's PR | `wf-peer-review` (it reads `wf-review` → `references/ai-review-guard.md` directly) | `wf-review` itself; planning, implementation, estimate, worklog skills |
 | "глянь коментарі", "що відповісти", review threads or a bot's review on the developer's own PR | `wf-review` → `references/ai-review-guard.md` (and `frontend-craft` → acting on review comments for React/RN) | planning, implementation, estimate, worklog skills |
 | "оціни", "скільки годин" | `wf-estimate` | review, worklog skills |
 | "створи jira задачу", "опиши таску" | `wf-jira-task` | implementation, review, worklog skills; `wf-estimate` only when a number is asked |
 | "залогуй", "закрий день", Tempo, timesheet | `wf-worklog` | everything else |
+| A pure question that needs no tool use | no stage skill; a domain skill only when the question is in its area (`seo` for organic search) | every `wf-*` skill |
+| Work on the ai-god repo itself (a skill, an adapter, the router) | the repo's root `AGENTS.md` and `docs/writing-for-agents.md`; `wf-implement` for the change | third-party skill-writing skills |
 
 A request that spans stages runs them in order (plan → implement → review → retro), loading each
 stage's skill when that stage starts.
@@ -47,6 +51,7 @@ Load a domain skill only when the active stage skill or the actual files in scop
 | Stage | Class |
 |---|---|
 | Planning, contract or architecture decisions | FRONTIER_REASONING |
+| Debugging — hypotheses and the root-cause call | FRONTIER_REASONING |
 | Implementation from an agreed plan | STRONG_GENERAL |
 | Independent review — severity and the fix decision for every finding | FRONTIER_REASONING |
 | Fixing accepted findings, exactly as the review decided | STRONG_GENERAL |

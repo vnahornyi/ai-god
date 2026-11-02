@@ -1,6 +1,6 @@
 ---
 name: wf-implement
-description: Implement one task — from its approved plan or as a direct small fix — as one coherent change, then stage it for the developer's approval. Use when asked to implement, continue or fix. Do not use for planning, estimating, or reviewing.
+description: Use when asked to implement an approved plan, continue an implementation, or make a direct small fix — "реалізуй план", "зроби", "fix".
 ---
 
 # wf-implement — one task, one change

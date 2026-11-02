@@ -1,6 +1,6 @@
 ---
 name: frontend-craft
-description: React and React Native engineering discipline — house style, composition, blast radius, states, data flow, performance, tests — in three modes (plan, build, review) loaded by the matching wf- stage skill. Use when React/RN code is in scope. Do not load it for non-React work or as a stand-alone planning, estimating or review entry point.
+description: Use when React or React Native code is in scope of a plan, an implementation or a review; the active stage names the mode (plan, build, review).
 ---
 
 # Frontend Craft

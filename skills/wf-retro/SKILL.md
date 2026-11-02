@@ -1,6 +1,6 @@
 ---
 name: wf-retro
-description: After the independent review of the developer's own implemented task, attribute every accepted finding to its cause — implementer model, skill, plan or spec — log one row in project memory, and advise what to do next: keep the setup, move implementation to another model mapping, fix a named skill, or tighten planning. Runs automatically once the developer has decided on wf-review findings. Never edits skills, adapters or code. Do not use for someone else's PR.
+description: Use once the developer has decided on the review findings of their own implemented task, before the fixes; it runs at that point without being asked.
 ---
 
 # wf-retro — what the review says about the model, the skills and the plan

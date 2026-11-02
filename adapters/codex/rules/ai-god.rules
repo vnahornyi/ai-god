@@ -54,6 +54,12 @@ prefix_rule(
 )
 
 prefix_rule(
+    pattern = ["git", "stash", ["push", "save", "-u", "--include-untracked", "-k", "--keep-index"]],
+    decision = "forbidden",
+    justification = "Stashing hides the developer's uncommitted work (wf-implement: no routine stash). A bare `git stash` cannot be told apart from `git stash list` here.",
+)
+
+prefix_rule(
     pattern = ["git", "stash", ["drop", "clear"]],
     decision = "forbidden",
     justification = "Dropping stashes is the developer's (AGENTS.md Git rule 4).",

@@ -1,6 +1,6 @@
 ---
 name: wf-plan
-description: Plan one concrete technical task into a single disposable plan file that a junior implementation model can follow without making decisions, and that the developer can read to size the work. Use when the developer asks for a plan or the task is too large or ambiguous to start safely. Do not use for implementing, reviewing, estimating hours or writing a Jira ticket.
+description: Use when the developer asks for a plan ("сплануй", "plan TASK") or a task is too large or ambiguous to start safely.
 ---
 
 # wf-plan — plan one task

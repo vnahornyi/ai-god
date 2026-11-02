@@ -105,7 +105,7 @@ agent uses profile-based user customizations and is outside this adapter.
 
 - **No persistent deny list from this repo.** Claude Code (`settings.base.json`) and Codex
   (`ai-god.rules`) deny push, `git add .`/`-A`, amend, `--no-verify`, rebase, `reset --hard`, stash
-  drop and branch deletion; Copilot gets none of it from the installer, so those Git rules rest on
+  push and drop, and branch deletion; Copilot gets none of it from the installer, so those Git rules rest on
   the global instructions and the approval prompts here.
 - **CLI:** shell and other tools are subject to Copilot's approval policy. `--deny-tool` can block a
   tool for the session, and a deny takes precedence over an allow. Keep direct `git push` denied;

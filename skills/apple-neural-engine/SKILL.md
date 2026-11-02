@@ -1,6 +1,6 @@
 ---
 name: apple-neural-engine
-description: Getting a model to run on the Apple Neural Engine and verifying where it ran — partitioning, ops and shapes that force CPU/GPU fallback, fp16, static shapes, Core ML vs ONNX Runtime CoreML EP. Use when an iOS model is slower than expected, a log shows unassigned nodes, or a model is being exported for iOS. Do not use for non-Apple ML.
+description: Use when an iOS model runs slower than expected, a Core ML or ONNX Runtime log shows unassigned or CPU-fallback nodes, or a model is being exported for iOS and the Apple Neural Engine.
 ---
 
 # Making a model run on the Neural Engine

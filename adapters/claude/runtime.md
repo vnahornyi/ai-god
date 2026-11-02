@@ -180,7 +180,8 @@ When `command -v claude` finds the CLI, the terminal form is
 - `~/.claude/settings.json` is the local overlay's `claude/settings.json`, which carries every entry of
   the public policy `adapters/claude/settings.base.json` (`install.sh --check` verifies it) plus
   personal keys such as `autoMode`, which Claude Code reads only from user settings: `git push`,
-  `git add .`/`-A`, amend, `--no-verify`, rebase, `reset --hard`, stash drop and branch deletion denied
+  `git add .`/`-A`, amend, `--no-verify`, rebase, `reset --hard`, `git stash` (push, save, drop, clear)
+  and branch deletion denied — stash push added after two eval runs stashed to test old code
   (flags written after other arguments are covered for `add` and `commit` only),
   `bin/push-ai-god` allowed. The desktop app and `claude plugin install` write into it (theme,
   `switchModelsOnFlag`, `enabledPlugins`, marketplaces), so those diffs land in the overlay repo —
@@ -193,7 +194,8 @@ When `command -v claude` finds the CLI, the terminal form is
 
 ## Skills and instructions
 
-- Skills: `~/.claude/skills/<name>` → `ai-god/skills/<name>` (per-skill links; claude.ai synced skills live in `~/.claude/skills/synced`, outside the repo), invoked with the `Skill` tool by name. Project
+- Skills: `~/.claude/skills/<name>` → `ai-god/skills/<name>` (per-skill links). claude.ai skill sync is off (`syncClaudeAiSkills: false` in the overlay's
+  settings): only this repo's skills, the plugins' and the app's built-in ones are listed. Invoked with the `Skill` tool by name. Project
   skills: `~/Developer/<project>/.claude/skills/<name>` → `ai-god/local/projects/<project>/skills/<name>`.
 - Global instructions: `~/.claude/CLAUDE.md` → `ai-god/global/AGENTS.md` (the root `AGENTS.md` holds
   only this repo's maintenance rules, so a session inside ai-god loads the global file once). Project `CLAUDE.md` and
