@@ -232,3 +232,7 @@ project's planning skill may name another git-ignored path, e.g. `app/.claude/pl
 workflow state, segment, handoff, review or escalation files exist. Personal skills in the overlay
 may keep their own config there. `.claude/` is a directory name, not a Claude dependency — all
 supported runtimes share it.
+
+## License
+
+MIT — see [`LICENSE`](LICENSE). The private overlay in `local/` is a separate repo and is not covered.
