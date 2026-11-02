@@ -23,9 +23,12 @@ NAME = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$")
 LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
 LEAK = re.compile(r"SendMessage|subagent_type|run_in_background|ToolSearch|mcp__|Skill tool|spawn_agent"
                   r"|fork_turns|\bClaude\b|Codex|Copilot|Opus|Sonnet|Haiku|Fable|gpt-")
-# README → "Expected hits": the model the estimates were measured on; an MCP server's tool names.
-LEAK_ALLOWED = {"wf-estimate/references/estimation.md", "figma-inspect/SKILL.md",
-                "figma-inspect/references/browser-recipes.md"}
+# README → "Expected hits": an MCP server's tool names.
+LEAK_ALLOWED = {"figma-inspect/SKILL.md", "figma-inspect/references/browser-recipes.md"}
+# global/AGENTS.md → Language: the public tree is English. Test inputs under evals/ are exempt.
+NON_ENGLISH = re.compile(r"[\u0400-\u04FF]")
+ENGLISH_DOCS = ["global/AGENTS.md", "AGENTS.md", "README.md", "INSTALL.md", "adapters/**/*.md",
+                "docs/**/*.md", "decisions/**/*.md"]
 MAX_DESC, MAX_LINES, MAX_CHARS, TOC_OVER = 1024, 500, 20000, 100
 
 
@@ -81,6 +84,18 @@ def lint_skill(skill_dir, router_text, root):
                     errors.append(f"{mrel}:{number}: broken link {target}")
             if inner not in LEAK_ALLOWED and LEAK.search(line):
                 errors.append(f"{mrel}:{number}: runtime tool or model name '{LEAK.search(line).group(0)}'")
+            if NON_ENGLISH.search(line):
+                errors.append(f"{mrel}:{number}: non-English text")
+    return errors
+
+
+def lint_english(root):
+    errors = []
+    for pattern in ENGLISH_DOCS:
+        for path in sorted(glob.glob(os.path.join(root, pattern), recursive=True)):
+            for number, line in enumerate(open(path, encoding="utf-8"), 1):
+                if NON_ENGLISH.search(line):
+                    errors.append(f"{os.path.relpath(path, root)}:{number}: non-English text")
     return errors
 
 
@@ -91,9 +106,12 @@ def run(root):
     for skill in sorted(glob.glob(os.path.join(root, "skills", "*", ""))):
         if os.path.exists(os.path.join(skill, "SKILL.md")):
             errors += lint_skill(skill.rstrip("/"), router, root)
-    for skill in sorted(glob.glob(os.path.join(root, "local", "projects", "*", "skills", "*", ""))):
+    for skill in sorted(glob.glob(os.path.join(root, "local", "projects", "*", "skills", "*", ""))
+                        + glob.glob(os.path.join(root, "local", "skills", "*", ""))):
         if os.path.exists(os.path.join(skill, "SKILL.md")):
-            warnings += [w for w in lint_skill(skill.rstrip("/"), None, root) if "tool or model name" not in w]
+            warnings += [w for w in lint_skill(skill.rstrip("/"), None, root)
+                         if "tool or model name" not in w and "non-English" not in w]
+    errors += lint_english(root)
     if router is not None:
         for name in sorted(set(re.findall(r"`(wf-[a-z0-9-]+)`", router))):
             if not os.path.exists(os.path.join(root, "skills", name, "SKILL.md")):
@@ -116,6 +134,7 @@ def self_test():
         "router does not name": ("unrouted", "---\nname: unrouted\ndescription: d\n---\nbody\n"),
         "tool or model name": ("leaky", "---\nname: leaky\ndescription: d\n---\nuse the Skill tool\n"),
         "plain YAML scalar": ("bad-yaml", "---\nname: bad-yaml\ndescription: Use for hours: x\n---\nbody\n"),
+        "non-English text": ("not-english", "---\nname: not-english\ndescription: d\n---\n\u043f\u043b\u0430\u043d\n"),
     }
     failures = []
     with tempfile.TemporaryDirectory() as tmp:

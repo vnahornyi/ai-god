@@ -8,7 +8,7 @@ of defining the term again.
 
 | Term | Meaning | Owner |
 |---|---|---|
-| stage skill | The one `wf-*` skill that decides what a task may do: plan, implement, debug, review, estimate, ticket, worklog, retro | `ai-workflow` → routing table |
+| stage skill | The one `wf-*` skill that decides what a task may do: plan, implement, debug, review, ticket, retro | `ai-workflow` → routing table |
 | domain skill | A skill about a technology or area (`frontend-craft`, `react-native-animations`, `seo`…) loaded beside the stage skill when its trigger matches | `ai-workflow` → routing table |
 | capability class | A model tier named by what it must do — FRONTIER_REASONING, STRONG_GENERAL, FAST_ROUTINE — mapped to concrete models only in the adapters | `ai-workflow/references/model-policy.md` |
 | run mode | `interactive` (the developer is waiting or the work needs a device or back-and-forth) or `background` (independent, command-verified, decision-free) | `wf-plan` → Phase 3; adapter → Run modes |

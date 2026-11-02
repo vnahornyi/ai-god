@@ -75,7 +75,7 @@ The same bar holds for JSDoc: written by people for people, saying why it was do
 
 Same rule when editing existing code: never add explanatory comments to make a diff easier to review. The diff is not the artifact, the code is. Say it in the PR description instead.
 
-Bad / good / over-applied examples for the rules above: `references/examples-house-style.md`.
+When each rule applies and when it does not: `references/house-style.md`; code pairs, when present, in the local overlay (`style/house-style-examples.md`).
 
 ### Composition: compound components and functional style
 
@@ -124,4 +124,4 @@ Load these when the work touches them — don't read all of them by reflex.
 | `references/regression.md` | Planning, and before every Gate 2 — blast-radius method and the QA checklist generator |
 | `references/stacked-branches.md` | **Before any work on a branch in a stack** — verify the chain, find expired promises, judge defects against the tip |
 | `references/testing.md` | Writing or reviewing tests (Jest + Testing Library) |
-| `references/examples-house-style.md` | **Before writing or reviewing component code.** Bad / good / over-applied pairs for ternaries, conditional rendering, function signatures and comments, each with "does not apply when" |
+| `references/house-style.md` | **Before writing or reviewing component code.** When each rule applies and when it does not, for ternaries, conditional rendering, function signatures and comments, each with "does not apply when" |

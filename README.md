@@ -15,7 +15,7 @@ works without it; `bin/check-public` keeps the overlay's material out of public 
                          SHARED — what, when, why
    global/AGENTS.md (invariants: git, facts, memory, overrides)
    skills/ai-workflow   (router: stage → skill, domain triggers, capability classes, plan lifecycle)
-   skills/wf-*          (stages: plan, implement, review, peer-review, estimate, jira-task, worklog)
+   skills/wf-*          (stages: plan, implement, debug, review, peer-review, retro, jira-task)
    skills/*             (domain knowledge: frontend-craft, figma-inspect, design-patterns, …)
    local/ (private overlay, git-ignored): memory/<project>, projects/<project> (rules.md + project
           skills, linked only into that project), company/, claude/settings.json, public-denylist.txt
@@ -42,7 +42,7 @@ while implementation is active; no state, handoff, segment, review, or escalatio
 
 `global/AGENTS.md` tells every runtime to load `ai-workflow` first. The router names one stage skill and
 only the domain skills its triggers allow — "review this PR" loads `wf-review` (+ `frontend-craft`
-review mode for React), not planning, estimation or worklog. Skill descriptions are always in
+review mode for React), not planning or ticket skills. Skill descriptions are always in
 context, so they stay short and say only when to use the skill, never how it works; routing between
 neighbouring skills lives in the router's table (`docs/writing-for-agents.md` → Pointers and
 descriptions). The routing eval in `evals/routing/` measures it.
@@ -84,7 +84,10 @@ PLANNING ─▶ IMPLEMENTING ─▶ INDEPENDENT REVIEW ─▶ APPROVED FIXES (if
 | `local/projects/<project>/checkout` | Path of the project checkout; `bin/check-public` reads its identifiers | — | — | — |
 | `local/projects/<project>/worktree-include` | Git-ignored paths `wt setup` clones into a new worktree (`skills/worktree`) | read by the script | same | same |
 | `local/memory/<project>/` | Project memory, `MEMORY.md` index | `~/.claude/projects/<slug>/memory` (auto-loaded) | not linked — `AGENTS.md` tells the runtime to read it | not linked — `AGENTS.md` tells the runtime to read it |
-| `local/company/` | Company standards the skills read when present (implementation standard, PR guide, estimation) | read via `AGENTS.md` → Local overlay | same | same |
+| `local/company/` | Company standards the skills read when present (implementation standard, PR guide) | read via `AGENTS.md` → Local overlay | same | same |
+| `local/skills/<name>/` | Personal skills (e.g. the worklog skill): private, linked next to the public skills | `~/.claude/skills/<name>` | `~/.codex/skills/<name>` | `~/.copilot/skills/<name>` |
+| `local/profile.md` | Private settings: `session_language`, `ticket_language` (`global/AGENTS.md` → Language) | read via `AGENTS.md` → Language | same | same |
+| `local/style/` | The developer's code-style examples and locale data the public skills read when present | read via the skills that name it | same | same |
 | `local/public-denylist.txt` | Private regexes for `bin/check-public` (names, orgs, ticket prefixes, internal domains) | — | — | — |
 
 Only `adapters/` and runtime permission files are runtime-specific. The Copilot adapter covers both
@@ -218,14 +221,14 @@ Check a skill change mechanically before staging (the pre-commit hook runs it to
 ```
 
 It enforces the frontmatter, size and link rules from the root `AGENTS.md` → "Changing a skill", the
-router coverage, and the leak scan for runtime tool and model names. Allowed hits: the calibration note
-in `wf-estimate/references/estimation.md` (it names the model the estimates were measured on) and the
+router coverage, the leak scan for runtime tool and model names, and English-only text in the public
+tree (`global/AGENTS.md` → Language; test inputs under `evals/` are exempt). Allowed leak hits: the
 TemPad Dev tool names in `figma-inspect` (an MCP server, the same in every runtime).
 
 ## Project-local paths the skills write
 
 `wf-plan` writes one temporary plan per planned task under the project's `.claude/plans/` (a
 project's planning skill may name another git-ignored path, e.g. `app/.claude/plans/` in a monorepo). No
-workflow state, segment, handoff, review or escalation files exist. Worklog config lives in
-`.claude/worklog.json`, governed by `wf-worklog`. `.claude/` is a directory name, not a Claude
-dependency — all supported runtimes share it.
+workflow state, segment, handoff, review or escalation files exist. Personal skills in the overlay
+may keep their own config there. `.claude/` is a directory name, not a Claude dependency — all
+supported runtimes share it.

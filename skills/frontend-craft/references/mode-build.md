@@ -56,7 +56,7 @@ For each consumer, state in one line whether it is affected. If more than ~5 con
 
 ### While writing
 
-- Before writing component code, read `references/examples-house-style.md`. When a rule's "Does not apply when" matches, do not apply it — an over-applied rule is a defect too.
+- Before writing component code, read `references/house-style.md` (and the overlay's `style/house-style-examples.md` when present). When a rule's "Does not apply when" matches, do not apply it — an over-applied rule is a defect too.
 - A reachable state the plan or task does not decide: ask in the report, and keep the code compiling without deciding it — an explicit `throw` whose message names the open question, never a missing return or a silent default.
 - Match the surrounding code's idiom. Consistency beats your preference.
 - **Solve it at the narrowest layer that can actually solve it**, and don't fix adjacent problems on the way. A screen-local fix beats the same fix pushed into `core`, because the rungs outward multiply the consumers you have to verify — and don't change an existing contract unless the task asks for it. `references/architecture.md` → Smallest change that solves it.

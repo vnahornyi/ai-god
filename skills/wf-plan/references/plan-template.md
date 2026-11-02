@@ -13,15 +13,15 @@ Sections of the template below:
 - §7 Snapshot tests
 - §8 Manual QA cases
 - §9 Regression checklist
-- §10 Estimation inputs (no hours)
+- §10 Scope of work (no hours)
 - §11 Verification checklist (before the PR)
 - §12 Open questions and follow-ups
 
 Copy this structure. Delete nothing; write `None` / `N/A` where a section does not apply.
 
 **Language: write the plan in English** — the implementation model reads it. The summary in chat
-goes in the developer's language (Ukrainian by default). Quote docs and tickets verbatim in their
-original language.
+goes in the session language (global instructions → Language). Quote docs and tickets verbatim in
+their original language.
 
 ---
 
@@ -164,11 +164,16 @@ platform matrix from §1 · themes · small/large screens · back navigation, de
 Also: persisted/cached data and migrations · analytics events · deep links and push · back
 navigation. Shared code → rows for every consuming platform, including its i18n catalogs.
 
-## 10. Estimation inputs (no hours)
+## 10. Scope of work (no hours)
+
+The developer estimates from this section; it carries no hours and no estimate.
 
 | Step | Type | Files n/e/d | Diff | Contract | Consumers | Check on | Unknowns | Depends on |
 |------|------|-------------|------|----------|-----------|----------|----------|------------|
 | 1 | … | … | … | … | … | … | … | … |
+
+**Per step, in plain words:**
+- Step 1 — what has to be read and understood first · what is written · what is verified and on which platforms · who has to agree on what · what would make it longer
 
 **Most likely to blow the scope:** …
 **Not in the steps but costs time:** reading into existing logic, review rounds, device testing, regression pass, coordination with …

@@ -1,6 +1,6 @@
 ---
 name: wf-implement
-description: Use when asked to implement an approved plan, continue an implementation, or make a direct small fix — "реалізуй план", "зроби", "fix".
+description: Use when asked to implement an approved plan, continue an implementation, or make a direct small fix — "implement the plan", "do it", "fix".
 ---
 
 # wf-implement — one task, one change
@@ -61,11 +61,11 @@ Capability: STRONG_GENERAL (the runtime adapter may map it to a trial model; the
    diff, explain behaviour, affected consumers, verification and remaining human QA, and give the
    rule trace `BR-id → file:line → test or QA case` for every row the plan lists. Open the report with
    `Implemented by: <model · effort>` as the runtime reports them, for `wf-retro`. Stop.
-4. **Draft the author's PR comments** on key decisions and on places likely to raise questions (the
-   team PR guide in the local overlay, `company/pr-guide.md`, may say more and wins). List them
-   in the report, each anchored `file:line`, one to three plain sentences in the developer's voice:
-   a choice a reviewer would question (module-level state, a guard that lives elsewhere, a platform
-   difference, a deliberately skipped case) and the fact that settles it. The developer posts them;
-   never post them yourself.
+4. **Points worth an author's PR comment** — key decisions and places likely to raise questions (the
+   team PR guide in the local overlay, `company/pr-guide.md`, may say more and wins). List them in
+   the report, each anchored `file:line`: the choice a reviewer would question (module-level state, a
+   guard that lives elsewhere, a platform difference, a deliberately skipped case) and the fact that
+   settles it. Explain; do not draft comment text. The developer writes and posts any comment
+   (global instructions → Publishing).
 5. After the developer approves the staged set: leave the plan in place (`ai-workflow` §4), then hand off to `wf-review` in a
    cold context. Accepted findings are fixed directly, without a fixes plan.

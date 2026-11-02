@@ -1,6 +1,6 @@
 ---
 name: wf-review
-description: Use when the developer asks to review their own change ("зроби ревʼю", "review my diff/PR", a staged diff, a commit range) or to answer review comments and bot reviews on their own PR.
+description: Use when the developer asks to review their own change ("review my diff/PR", a staged diff, a commit range) or to answer review comments and bot reviews on their own PR.
 ---
 
 # wf-review — review your own change, cold

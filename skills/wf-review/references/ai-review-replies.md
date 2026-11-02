@@ -1,41 +1,33 @@
-# AI review replies — answering cut comments and learning from the developer
+# AI review replies — explaining each comment and learning from the developer
 
-Read with `ai-review-guard.md` when you draft replies to AI-review comments on a PR, or when the
-developer has answered a review and the learning loop is due. The gates live in the guard; this file
-is how the cut is said and how the gates improve.
+Read with `ai-review-guard.md` when the developer asks what to make of AI-review comments on a PR,
+or when they have answered a review and the learning loop is due. The gates live in the guard; this
+file is how each verdict is explained and how the gates improve.
 
 ## Contents
 
-- Answering a cut comment
-- Voice
+- Explaining each comment
 - Learning loop — run after every use
 - Learned cases
 
-## Answering a cut comment
+## Explaining each comment
 
-**The guard never posts.** No PR comment, reply, review, reaction or resolved thread from the guard
-or from the session running it — not even when the reply is drafted and obvious. The developer
-validates every text and posts it themselves. Drafts go to the chat, nowhere else.
+Nothing is posted and no reply text is drafted (global instructions → Publishing). For every
+comment, explain it so the developer can write their own reply:
 
-Short, in the developer's own voice, one fact that refutes the premise and, if needed, where it lives.
-No step-by-step account of the reviewer's reasoning, no lecture, no "уточню".
+- **Claim** — what the comment says will go wrong, in one line.
+- **Premise** — holds / does not hold / partly, with the evidence: `file:line`, the library source,
+  the base-branch behaviour.
+- **Gate** — which gate cuts it or which it passes, and why.
+- **Verdict** — real defect, cut, or partly right (and which part).
+- **Cost of changing anyway** — when it is cut but cheap, what the change would touch.
 
-Cutting a comment and changing the code are separate decisions. When the change is cheap, the
-developer may make it anyway while the reply still says the comment was not a defect — that is not a
-contradiction, and you never push them to "agree" with the bot after the fact. Mention the commit only
-if they want to.
+Cutting a comment and changing the code are separate decisions; the developer may make a cheap
+change while still disagreeing with the comment, and you never push them to agree with the bot.
+A reply the developer has already posted is final; do not suggest follow-ups to it.
 
-A reply the developer already posted is final. Do not draft follow-up clarifications to it — a
-second "уточню" message under one's own answer is not how people talk in a review thread.
-
-## Voice
-
-The developer's replies are one to three plain sentences in Ukrainian, direct, sometimes blunt, often
-without code formatting; they may say outright that the bot guessed, and they cite the project rule
-by name (`AGENTS.md` → "avoid opportunistic refactors"). When part of the comment is right they say
-so first and then decline with the concrete cost ("взагалі то так, але це роздуває дуже снапшот").
-A comment they accept and fix gets a 👍 reaction and no text — never draft a reply for it. Draft in that register — the learned cases (below) are
-the reference, not this paragraph.
+The learned cases (below) show how the developer has judged similar comments; use them to calibrate
+the verdict, not to word a reply.
 
 ## Learning loop — run after every use
 
@@ -59,7 +51,7 @@ The guard improves only from the developer's own replies, never from your verdic
 4. **Update.** Gate text in `ai-review-guard.md`; case rows in the project's overlay cases file. `covered` → add a case row only if the gate has fewer than three cases. `refines` →
    amend the gate's sentence with the new reason, add the case. `new` → add a gate, add the case.
    Merge rather than append: one row per distinct argument, the newest PR wins. Keep each quote under
-   15 words, verbatim, in the developer's language.
+   15 words, verbatim, in the language it was written in.
 5. **Hand back.** Stage the change (gate text in ai-god, case rows in the `local/` overlay repo) and show the diff under the global Git rules — never
    commit it on your own. Report in one line per reply: gate · covered/refines/new.
 
@@ -67,5 +59,5 @@ The guard improves only from the developer's own replies, never from your verdic
 
 The cases are project data and live in the local overlay:
 `memory/<project>/ai-review-guard-cases.md` (columns: date · PR · bot claim · the developer's cut,
-verbatim · gate). Read the file for the project at hand before drafting a reply; without an overlay
+verbatim · gate). Read the file for the project at hand before explaining a comment; without an overlay
 there are no cases and the gates alone apply.

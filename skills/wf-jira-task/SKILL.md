@@ -1,6 +1,6 @@
 ---
 name: wf-jira-task
-description: Use when the developer asks for a Jira ticket — "створи jira задачу", "опиши таску", or turning a plan into a ticket.
+description: Use when the developer asks for a Jira ticket — create a ticket, describe a task, or turn a plan into a ticket.
 ---
 
 # wf-jira-task — a ticket people can read
@@ -10,15 +10,17 @@ time goes**. It holds no file paths and no code — that level lives in the `wf-
 
 ## Start — one question block
 
-Ask together, once. Give each question a recommended answer drawn from the context (the developer's
-language, an existing ticket or plan); "yes" accepts every recommendation. Do not ask what the
+Ask together, once. Give each question a recommended answer drawn from the context (an existing
+ticket or plan, the project's rules); "yes" accepts every recommendation. Do not ask what the
 ticket, the plan or the repo already answers.
 
-1. Language: **EN** or **UA**?
-2. Type: Story / Task / Bug; project key; epic or parent, if any.
-3. Do you already have an estimate? Should `wf-estimate` give advice?
-4. Research depth when there is no plan: none (your description only) / light (find modules,
+1. Type: Story / Task / Bug; project key; epic or parent, if any.
+2. Your estimate, if you already have one — the ticket carries only the developer's number.
+3. Research depth when there is no plan: none (your description only) / light (find modules,
    consumers, contract).
+
+The ticket is written in `ticket_language` (global instructions → Language; a project's `rules.md`
+may override it).
 
 ## Sources
 
@@ -29,7 +31,7 @@ ticket, the plan or the repo already answers.
 
 ## Output
 
-Fill `references/ticket-template.md` in the chosen language and show it in the chat.
+Fill `references/ticket-template.md` in `ticket_language` and show it in the chat.
 
 - **Work plan** blocks describe results, not files: "Reading into the current returns flow and its
   tests", "Agreeing field `reason` with backend (who)", "Implementation: list screen states",

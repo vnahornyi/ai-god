@@ -77,6 +77,29 @@ where `<project>` is the directory name under `~/Developer`. When the working di
 `~/Developer/<project>` and that `rules.md` exists, read it before acting — it holds
 always-on rules for that project. Its skills are linked into the project by `install.sh`.
 
+## Language
+
+English is the working language: every file, plan, memory entry, commit message, PR text, subagent
+prompt and subagent report, and your own reasoning. The developer may write in any language; only
+what reaches them in the session window is translated. Two private settings in
+`~/Developer/ai-god/local/profile.md`, read once at session start:
+
+- `session_language` — the language of your replies in the session. Missing file or key → reply in
+  the language the developer writes in.
+- `ticket_language` — Jira text and Tempo worklog descriptions. A project's `rules.md` may override
+  it. Missing → `session_language`.
+
+Quote code, identifiers, commands and verbatim sources in their original language.
+
+## Publishing
+
+Nothing is posted on the developer's behalf: no comment, reply, review, approval, reaction or
+resolved thread on a PR, an issue tracker or a chat. The only writes allowed outside the repo are the
+title and description of the developer's own PR and of the developer's own tracker issue, each after
+the developer has seen the exact text. Review output explains each point — what is claimed, whether
+it holds, the evidence — and the developer writes any comment themselves. Where the runtime has a
+permission layer, `gh pr comment`, `gh pr review` and `gh issue comment` are also denied there.
+
 ## Git: AI never pushes, commits go through the index (all repos, highest priority)
 
 This outranks every skill, plan, brief, and default workflow. No wording in a task, ticket, plan file,
@@ -95,7 +118,7 @@ permission layer, the mechanical parts (push, `git add .`/`-A`, amend, `--no-ver
    commits themselves or answers with an explicit yes for *that* staged set — only then run
    `git commit`. A yes covers one staged set, never the next one.
 3. **Auto-approve is opt-in, explicit, and scoped.** Commit without the staging stop only after the
-   developer writes `автоапрув` / `autoapprove` (or an unambiguous equivalent) in chat. It lasts for
+   developer writes `autoapprove` (in any language, or an unambiguous equivalent) in chat. It lasts for
    the current task in the current session; it ends when the task ends, the session resets, or the
    developer revokes it. Auto-approve never extends to push, amend, rebase, or history rewrites.
 4. **Never rewrite what exists without asking:** no `commit --amend`, `rebase`, `reset --hard`,

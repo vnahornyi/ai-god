@@ -2,11 +2,12 @@
 
 A component that looks right with demo data was built against kind data: names that fit one line,
 counts that need no plural, every optional field filled. This pass undoes that, one rendered value at
-a time. Adapted for React Native and Ukrainian/Russian locales from Emil Kowalski's `break-ui` skill
+a time. Adapted for React Native from Emil Kowalski's `break-ui` skill
 (github.com/emilkowalski/skills, MIT, read 2026-10-27).
 
 `states-and-platform.md` → Content edge cases says *that* these cases must hold; this file is *how*
-to find the ones a component was never built against.
+to find the ones a component was never built against. Values for the developer's own locales live in
+the local overlay (`style/worst-case-data-locales.md`); read that file too when it exists.
 
 ## Contents
 
@@ -24,7 +25,7 @@ to find the ones a component was never built against.
    `"aaaaaaaa…"` and 5,000-character names prove nothing and get dismissed.
 2. **Change the data, not the component.** The worst case enters where demo data does — the mock,
    the story, the fixture, the test props. Never edit markup or styles to produce a break.
-3. **Long text is not the whole job.** What ships broken is usually short: `1 товарів`, a missing
+3. **Long text is not the whole job.** What ships broken is usually short: `1 items`, a missing
    avatar, an orphaned `—` where an optional role was, an empty list, a badge that grew in
    translation.
 4. **Report before fixing.** Several breaks are design or product decisions (truncate or wrap, what
@@ -77,14 +78,14 @@ Use `example.com` / `.test` domains for emails and URLs.
 
 | Value | Breaks |
 | --- | --- |
-| `Олександра Вишневська-Коваленко` | Long, hyphenated; wraps, and the hyphen is a break point |
-| `Костянтин Олександрович Перебийніс-Задорожний` | Three parts; naive initials, overflow in single-line rows |
-| `Аліна Ґудзь-Ївженко` | `Ґ`, `Ї`, `Й` — clipped by a tight `lineHeight` with `overflow: 'hidden'`; sorting |
-| `Ян` / `Я` | Very short; empty-looking name column, one-character initials |
+| `Anna-Katharina Schwarzenberg-Müller` | Long, hyphenated; wraps, and the hyphen is a break point |
+| `Maximilian Alexander von Hohenberg-Lichtenstein` | Several parts; naive initials, overflow in single-line rows |
+| `Åsa Ölçer-Žižek` | marks above the cap height (`Å`, `Ž`) — clipped by a tight `lineHeight` with `overflow: 'hidden'`; sorting |
+| `Li` / `X` | Very short; empty-looking name column, one-character initials |
 | `Christopher Alexander Montgomery III` | Latin with a suffix; initials `CI` |
-| `🦊 Лис` | Emoji first; `name[0]` returns half a surrogate pair |
+| `🦊 Fox` | Emoji first; `name[0]` returns half a surrogate pair |
 | `👩🏽‍💻 Priya` | ZWJ sequence; `.length` is 7+, slicing splits it |
-| `  Оля   Ткач ` | Leading, trailing and repeated spaces; empty "words" in initials |
+| `  Ann   Lee ` | Leading, trailing and repeated spaces; empty "words" in initials |
 | *(missing)* | Only a phone or email; the UI needs a fallback |
 
 ### Contacts, identifiers, files
@@ -95,27 +96,27 @@ Use `example.com` / `.test` domains for emails and URLs.
 | `first.last+orders@example.com` | Plus-addressing; validation rejecting `+`, truncation hiding the meaningful part |
 | `+380 (67) 123-45-67` vs `0671234567` | Formatting drift between input, storage and display |
 | `9f8e7d6c-5b4a-4c3d-8e2f-1a0b9c8d7e6f` | Order or tracking id; middle truncation candidate |
-| `Накладна_повернення_FINAL_v12_підписана.pdf` | End truncation hides the version and extension |
+| `Return_invoice_FINAL_v12_signed.pdf` | End truncation hides the version and extension |
 
 ### Labels and copy from data
 
 | Value | Breaks |
 | --- | --- |
-| `Кросівки чоловічі для бігу по пересіченій місцевості, водонепроникні` | Product title in a card; two-line clamp, row height |
-| `Запрошення прострочене 12 днів тому` | Long status badge squeezing the name |
-| The Russian copy of a Ukrainian label (or the reverse) | Second-locale length; a fixed-width button overflows |
+| `Men's waterproof trail running shoes for rough terrain, wide fit` | Product title in a card; two-line clamp, row height |
+| `Invitation expired 12 days ago` | Long status badge squeezing the name |
+| The same label in the project's longest locale | Second-locale length; a fixed-width button overflows |
 | Twelve tags on one item | Wraps into a wall; needs a `+8` overflow |
-| `""` / `"   "` / `Без назви` | Missing title; collapsed heading, zero-height row |
-| `<b>` / `&amp;` / `**жирний**` | Must render as literal text |
+| `""` / `"   "` / `Untitled` | Missing title; collapsed heading, zero-height row |
+| `<b>` / `&amp;` / `**bold**` | Must render as literal text |
 | A newline inside a single-line field | Doubles the row or silently disappears |
 
 ### Numbers and money
 
 | Value | Breaks |
 | --- | --- |
-| `0` | "0 товарів", empty progress bar, division by zero in a percentage |
-| `1`, `2`, `5`, `11`, `21`, `22` | Ukrainian/Russian plural forms (one / few / many): `1 товар`, `2 товари`, `5 товарів`, `11 товарів`, `21 товар`. A hardcoded `count + ' товарів'` fails four of six |
-| `1284` | Thousands separator: `1 284` in `uk`, `1,284` in `en` |
+| `0` | "0 items", empty progress bar, division by zero in a percentage |
+| `1`, `2`, `5`, `11`, `21`, `22` | Locales with several plural forms (Slavic, Arabic: one / few / many) pick a different form for each; a hardcoded `count + ' items'` fails most of them |
+| `1284` | Thousands separator: `1 284` in many European locales, `1,284` in `en` |
 | `12345678.9` as UAH | `12 345 678,90 ₴` — width of totals; locale-hardcoded separators |
 | `-42.5` | Negative sign, refund colour logic |
 | `0.1 + 0.2` | `0.30000000000000004` rendered raw |
@@ -128,8 +129,8 @@ Use `example.com` / `.test` domains for emails and URLs.
 | Value | Breaks |
 | --- | --- |
 | 0 items | Whether an empty state exists, and which one (empty vs filtered-empty) |
-| 1 item | A grid that looks broken with one card; "1 з 1" |
-| Exactly page size, and page size + 1 | Off-by-one in "показано 40 з 40", an empty page 2 |
+| 1 item | A grid that looks broken with one card; "1 of 1" |
+| Exactly page size, and page size + 1 | Off-by-one in "showing 40 of 40", an empty page 2 |
 | 1,000+ unpaginated | Render time, memory, scroll |
 | One item ten times taller | Rows stretching in a grid |
 | Two items with identical names | A list where the name is the only distinguishing field |
@@ -138,9 +139,9 @@ Use `example.com` / `.test` domains for emails and URLs.
 
 | Value | Breaks |
 | --- | --- |
-| Now | "0 секунд тому" instead of "щойно" |
+| Now | "0 seconds ago" instead of "just now" |
 | 12 days, 11 months, 3 years ago | Relative-time thresholds; switch to an absolute date |
-| A future date | "через 3 дні" vs "-3 дні тому" |
+| A future date | "in 3 days" vs "-3 days ago" |
 | `1970-01-01` | A zero timestamp shown as a real date |
 | `2026-12-31T23:30:00-08:00` | A different day in UTC and in Kyiv |
 
@@ -164,7 +165,7 @@ the JS engine actually has the API for that locale (Hermes builds and polyfills 
 | Partial data — some optional fields filled, others not, in one list | Misaligned rows |
 | Every enum value at once (`active`, `invited`, `expired`, `blocked`) | Badge widths vary |
 | No permission | Disabled actions; does the row keep its layout? |
-| The current user in the list | "Ви" labels, actions that must not apply to yourself |
+| The current user in the list | "You" labels, actions that must not apply to yourself |
 | Smallest supported screen (320 pt wide) | Every overflow above at once |
 | Largest system font scale | Fixed heights clip growing text |
 | Dark mode | Hardcoded colours, invisible borders and logos |
@@ -179,10 +180,10 @@ the JS engine actually has the API for that locale (Hermes builds and polyfills 
 | A long email or URL runs past the edge or breaks mid-glyph unpredictably | Unbreakable string, no line policy | `numberOfLines` + `ellipsizeMode` per field (see below) |
 | A badge wraps onto two lines | The badge shrinks | `flexShrink: 0` on the badge, decide what yields instead |
 | Avatar centred against a three-line name looks adrift | `alignItems: 'center'` on rows of varying height | top-align once text can wrap |
-| `Й`, `Ї`, `Ґ` or emoji clipped at the top | Fixed `lineHeight` with `overflow: 'hidden'` | looser `lineHeight`, no clipping on text |
-| Wrong initials (`Я` for "Ян", `�` for an emoji-first name) | `name.split(' ')[0][0]` | grapheme-aware split (or the project's helper), first + last word, icon fallback |
+| Marks above the cap height (`Å`, `Ž`) or emoji clipped at the top | Fixed `lineHeight` with `overflow: 'hidden'` | looser `lineHeight`, no clipping on text |
+| Wrong initials (one letter for a two-letter name, `�` for an emoji-first name) | `name.split(' ')[0][0]` | grapheme-aware split (or the project's helper), first + last word, icon fallback |
 | An orphaned `—` or empty line for a missing optional field | A placeholder rendered for nothing | omit the line, or reserve its height intentionally |
-| "1 товарів", "21 товарів" | Hardcoded plural | the i18n layer's plural (ICU `plural` / Lingui `<Plural>`), never `count + ' …'` |
+| "1 items", "21 items" | Hardcoded plural | the i18n layer's plural (ICU `plural` / Lingui `<Plural>`), never `count + ' …'` |
 | Numbers jitter while updating, columns misalign | Proportional figures | `fontVariant: ['tabular-nums']` |
 | `1284`, `1,284.000000001`, `NaN` | A raw number rendered | the project's number/currency formatter with the user's locale; guard null |
 | A translated button label overflows | Fixed `width` | width from content with `minWidth` |

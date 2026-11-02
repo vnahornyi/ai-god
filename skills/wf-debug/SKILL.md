@@ -1,6 +1,6 @@
 ---
 name: wf-debug
-description: Use when something is broken, crashing, flaky or slower than before and the cause is unknown — "чому падає", "не працює", "debug", a crash report, a failing or flaky test, a performance regression.
+description: Use when something is broken, crashing, flaky or slower than before and the cause is unknown — "why does it crash", "it doesn't work", "debug", a crash report, a failing or flaky test, a performance regression.
 ---
 
 # wf-debug — find the cause before touching the code

@@ -24,7 +24,7 @@ cross-platform architecture · resolving a substantive conflict between requirem
 
 **STRONG_GENERAL** — a strong coding model at medium effort.
 Implementation that follows a verified plan · tests · refactoring · straightforward debugging ·
-fixes after review · normal code investigation · worklog reconstruction.
+fixes after review · normal code investigation.
 
 **FAST_ROUTINE** — a fast, cheap model at low effort.
 Trivial edits · formatting · mechanical transformations (renames, catalog regeneration, fixture
@@ -47,10 +47,8 @@ runtime can do so cheaply (a subagent with a lower model) — otherwise it is do
 | IMPLEMENTING — mechanical steps | FAST_ROUTINE, or inline without a subagent | Do not delegate unless it saves more than it costs |
 | REVIEWING | FRONTIER_REASONING | Fresh, independent context; assigns severity and decides the fix for every finding |
 | FIXING | STRONG_GENERAL | Implements the fixes the review decided — section below |
-| ESTIMATE, JIRA TICKET TEXT | STRONG_GENERAL | Reads a plan or a lightly researched task; never writes code |
+| JIRA TICKET TEXT | STRONG_GENERAL | Reads a plan or a lightly researched task; never writes code |
 | PEER REVIEW (someone else's PR) | STRONG_GENERAL; FRONTIER_REASONING for security, data-loss or architectural PRs | Report only what deserves attention |
-| WORKLOG — evidence collection, formatting | FAST_ROUTINE | Script output and table layout |
-| WORKLOG — reconstruction and audit | STRONG_GENERAL | FRONTIER_REASONING only when reconciliation is genuinely tangled: several buckets, conflicting evidence across a week, corrections to already-logged time |
 
 ## Review → fix routing
 

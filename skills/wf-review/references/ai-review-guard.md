@@ -11,8 +11,8 @@ the runtime's review engine, or your own candidate list before it is reported. A
 if it passes every gate below. The gates are ordered by how often bot reviews fail them.
 
 `review-contract.md` → Judging someone else's claim says *how* to work a claim (premise, concern,
-current head, answer both). This file says *which claims to cut*. Drafting replies to cut comments,
-the developer's voice, the learned cases and the learning loop live in `ai-review-replies.md`.
+current head, answer both). This file says *which claims to cut*. How each verdict is explained to
+the developer, the learned cases and the learning loop live in `ai-review-replies.md`.
 
 Process basis: AI remarks are checked in the context of the module before they reach the PR author.
 A bot review forwarded unchecked breaks that rule; the developer may cite it in a reply. A team PR
@@ -43,7 +43,7 @@ is not a scenario.
 
 **4. A concrete failure with its rate.** Input → what the user sees → how often. "Up to 30 fps" has to
 survive the step that turns the camera off; "a second toast" has to survive the lock. A claim without
-a reproducible path is a question to the author, never "Важливо".
+a reproducible path is a question to the author, never a blocking label.
 
 **5. Blast radius counted, not asserted.** "Used by several screens" requires `rg` over the callers:
 name them. Two callers in the same module is not "several screens".
@@ -57,7 +57,7 @@ guide frame" — open the styles, the layout, the sibling component. A naming cl
 layout is cut.
 
 **8. Severity matches impact.** Style, naming and "consider extracting" have no severity — they are
-optional suggestions at most. "Важливо" / P1 / HIGH needs gates 1–4 passed with a user-visible failure.
+optional suggestions at most. A blocking label ("important", "must fix") / P1 / HIGH needs gates 1–4 passed with a user-visible failure.
 
 **9. Scope is the ticket's.** Extracting a shared helper across modules the ticket does not touch,
 changing monitoring levels, renaming for taste — out of this PR. Say "separate task" and move on.

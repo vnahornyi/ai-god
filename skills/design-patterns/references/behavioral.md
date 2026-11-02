@@ -5,22 +5,22 @@ exist as a hook, a reducer, a union type or a function prop; the entries say whi
 
 ## Contents
 
-- [Chain of Responsibility](#chain-of-responsibility--ланцюжок-обовязків)
-- [Command](#command--команда)
-- [Iterator](#iterator--ітератор)
-- [Mediator](#mediator--посередник)
-- [Memento](#memento--знімок)
-- [Observer](#observer--спостерігач)
-- [State](#state--стан)
-- [Strategy](#strategy--стратегія)
-- [Template Method](#template-method--шаблонний-метод)
-- [Visitor](#visitor--відвідувач)
+- [Chain of Responsibility](#chain-of-responsibility)
+- [Command](#command)
+- [Iterator](#iterator)
+- [Mediator](#mediator)
+- [Memento](#memento)
+- [Observer](#observer)
+- [State](#state)
+- [Strategy](#strategy)
+- [Template Method](#template-method)
+- [Visitor](#visitor)
 - [Communication patterns compared](#communication-patterns-compared)
 - [Look-alikes](#look-alikes)
 
 ---
 
-## Chain of Responsibility · Ланцюжок обов'язків
+## Chain of Responsibility
 
 **Idea.** A request passes through an ordered list of handlers; each one either handles it, stops
 it, or passes it on. The sender does not know which handler will act.
@@ -55,7 +55,7 @@ not the route it travels).
 
 ---
 
-## Command · Команда
+## Command
 
 **Idea.** Turn an action into a value: something you can store, pass around, queue, retry, log,
 serialize, or undo — separated from what triggers it.
@@ -88,7 +88,7 @@ Memento (stores state for undo; Command stores the action and its inverse — th
 
 ---
 
-## Iterator · Ітератор
+## Iterator
 
 **Idea.** Walk a collection element by element without knowing how it is stored; several walks can
 run independently.
@@ -125,7 +125,7 @@ often combined).
 
 ---
 
-## Mediator · Посередник
+## Mediator
 
 **Idea.** Components stop talking to each other directly; they report events to one coordinator,
 which decides who reacts. Many-to-many links become many-to-one.
@@ -160,7 +160,7 @@ Observer (distributed one-to-many notifications; Mediator centralizes the decisi
 
 ---
 
-## Memento · Знімок
+## Memento
 
 **Idea.** Capture an object's state as an opaque snapshot so it can be restored later, without
 exposing or depending on the object's internals.
@@ -194,7 +194,7 @@ commands for redo, snapshots for undo).
 
 ---
 
-## Observer · Спостерігач
+## Observer
 
 **Idea.** A subject keeps a list of subscribers and notifies them when it changes; subscribers come
 and go at runtime; the subject does not know what they do.
@@ -236,7 +236,7 @@ where publisher and subscriber do not even know the subject).
 
 ---
 
-## State · Стан
+## State
 
 **Idea.** An object's behavior depends on which state it is in, and each state defines what is
 allowed and where it can go next — instead of every method checking flags.
@@ -288,7 +288,7 @@ decide the next state themselves).
 
 ---
 
-## Strategy · Стратегія
+## Strategy
 
 **Idea.** A family of interchangeable algorithms behind one signature; the caller picks one and the
 context uses it without knowing which.
@@ -324,7 +324,7 @@ instead of composition); Decorator (outside vs inside).
 
 ---
 
-## Template Method · Шаблонний метод
+## Template Method
 
 **Idea.** A fixed skeleton of an algorithm with some steps left for variants to fill in; the order
 of steps stays in one place.
@@ -367,7 +367,7 @@ steps); Builder (constructs an object step by step, not a process).
 
 ---
 
-## Visitor · Відвідувач
+## Visitor
 
 **Idea.** Keep a stable set of node types free of operations; put each operation (render, validate,
 serialize, price) in its own place that handles every node type.

@@ -70,3 +70,15 @@ prefix_rule(
     decision = "forbidden",
     justification = "Branch deletion is the developer's (AGENTS.md Git rule 4).",
 )
+
+prefix_rule(
+    pattern = ["gh", "pr", ["comment", "review"]],
+    decision = "forbidden",
+    justification = "Nothing is posted on the developer's behalf (AGENTS.md Publishing).",
+)
+
+prefix_rule(
+    pattern = ["gh", "issue", "comment"],
+    decision = "forbidden",
+    justification = "Nothing is posted on the developer's behalf (AGENTS.md Publishing).",
+)

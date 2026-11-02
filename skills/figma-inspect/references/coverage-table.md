@@ -8,10 +8,10 @@ Inventory: <N> nodes · Table: <N> rows ✅
 
 | Layer path | Node id | What it is for the skeleton | Status |
 |---|---|---|---|
-| Modal / Header / Title | `I…;18795:336154` | text — "Товари" → i18n key `…` | mapped |
+| Modal / Header / Title | `I…;18795:336154` | text — "Products" → i18n key `…` | mapped |
 | Modal / Header / Close | `I…;18795:336153` | action — close modal | mapped |
 | Card / Message M | `I…;20487:511440` | state — review status message (`Message=on`) | mapped |
-| Card / Button-2.0 | `I…;20486:511176` | action — "Оцінити товар" (`Button=on`) | mapped |
+| Card / Button-2.0 | `I…;20486:511176` | action — "Rate product" (`Button=on`) | mapped |
 | Card / foto / image | `I…;12136:274807` | image — product photo | mapped |
 | HomeIndicator | `I…;20527:400019` | system chrome | decor — dev styles |
 ```

@@ -23,6 +23,9 @@ them. Before proposing one of those again, read its file.
 | [0005](0005-router-is-model-facing.md) | The router is loaded by the model, not invoked by the user |
 | [0006](0006-frontmatter-name-description-only.md) | Skill frontmatter is `name` and `description` only |
 | [0007](0007-no-generic-book-rule-packs.md) | No generic rule packs without an observed failure |
+| [0008](0008-no-ai-estimates.md) | No estimation skill; the developer estimates |
+| [0009](0009-nothing-is-posted.md) | Nothing is posted on the developer's behalf |
+| [0010](0010-english-working-language.md) | English is the working language; the session window is translated |
 
 | Out of scope | Reopen when |
 |---|---|

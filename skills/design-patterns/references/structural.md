@@ -6,18 +6,18 @@ and it is the most common mix-up in reviews. See the table at the end.
 
 ## Contents
 
-- [Adapter](#adapter--адаптер)
-- [Bridge](#bridge--міст)
-- [Composite](#composite--компонувальник)
-- [Decorator](#decorator--декоратор)
-- [Facade](#facade--фасад)
-- [Flyweight](#flyweight--легковаговик)
-- [Proxy](#proxy--замісник)
+- [Adapter](#adapter)
+- [Bridge](#bridge)
+- [Composite](#composite)
+- [Decorator](#decorator)
+- [Facade](#facade)
+- [Flyweight](#flyweight)
+- [Proxy](#proxy)
 - [Telling the wrappers apart](#telling-the-wrappers-apart)
 
 ---
 
-## Adapter · Адаптер
+## Adapter
 
 **Idea.** A translator between an interface you have and the interface your code expects. Neither
 side changes; the adapter converts.
@@ -56,7 +56,7 @@ Proxy/Decorator (keep the interface; Adapter changes it).
 
 ---
 
-## Bridge · Міст
+## Bridge
 
 **Idea.** Split one class hierarchy that varies along two independent axes into two hierarchies
 joined by composition, so N × M implementations become N + M.
@@ -91,7 +91,7 @@ Strategy (swaps one algorithm; Bridge separates two whole dimensions).
 
 ---
 
-## Composite · Компонувальник
+## Composite
 
 **Idea.** Leaves and groups share one interface, so code works on a tree without caring whether a
 node is a single item or a container of items.
@@ -133,7 +133,7 @@ for virtualization (`FlatList`/`SectionList` need a flat array — flatten with 
 
 ---
 
-## Decorator · Декоратор
+## Decorator
 
 **Idea.** Wrap something in an object with the *same* interface that adds behavior before or after
 delegating. Wrappers stack in any combination.
@@ -177,7 +177,7 @@ request; decorators always delegate); Strategy (changes the inside; Decorator ch
 
 ---
 
-## Facade · Фасад
+## Facade
 
 **Idea.** One simple entry point that hides a complicated subsystem. Clients call the facade; the
 facade orchestrates the parts.
@@ -211,7 +211,7 @@ subsystem does not know the facade exists).
 
 ---
 
-## Flyweight · Легковаговик
+## Flyweight
 
 **Idea.** When there are huge numbers of similar objects, share the immutable common part
 (intrinsic state) and pass the varying part (extrinsic state) in from outside.
@@ -245,7 +245,7 @@ closely related but not about object identity sharing).
 
 ---
 
-## Proxy · Замісник
+## Proxy
 
 **Idea.** A stand-in with the *same* interface as the real object that controls access to it:
 lazy creation, caching, permission checks, remote access, logging, reference counting.

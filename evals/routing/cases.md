@@ -1,4 +1,5 @@
-# Routing eval — cases (fixed 2026-11-01, before the first run)
+# Routing eval — cases (fixed 2026-11-01, before the first run; key for cases 10, 11 and 13 changed
+2026-11-02 when the estimation skill was removed — a requirement change, not a fit to a result)
 
 What a fresh session loads for a request, judged against `skills/ai-workflow`. The runner receives
 only the prompts (the `Prompt` column); everything else here is the key. A case passes when the
@@ -8,21 +9,21 @@ skill-creator and the like) count as must-not wherever a project skill covers th
 
 | # | Prompt | Stage | Required domain | Must not |
 |---|---|---|---|---|
-| 1 | сплануй задачу: додати екран налаштувань сповіщень у мобільному застосунку на React Native, ось макет https://www.figma.com/design/abc/Settings?node-id=1-2 | wf-plan | figma-inspect, frontend-craft | wf-estimate, wf-review, wf-worklog, wf-implement |
-| 2 | Plan the migration of the auth token storage from AsyncStorage to the keychain | wf-plan | none | wf-implement, wf-estimate |
-| 3 | реалізуй план .claude/plans/PROJ-12-sale-label.md (це React Native компонент) | wf-implement | frontend-craft | wf-plan, wf-estimate, wf-review |
-| 4 | fix the typo in the README heading | wf-implement | none | wf-plan, frontend-craft, wf-estimate |
+| 1 | сплануй задачу: додати екран налаштувань сповіщень у мобільному застосунку на React Native, ось макет https://www.figma.com/design/abc/Settings?node-id=1-2 | wf-plan | figma-inspect, frontend-craft | wf-review, wf-worklog, wf-implement |
+| 2 | Plan the migration of the auth token storage from AsyncStorage to the keychain | wf-plan | none | wf-implement |
+| 3 | реалізуй план .claude/plans/PROJ-12-sale-label.md (це React Native компонент) | wf-implement | frontend-craft | wf-plan, wf-review |
+| 4 | fix the typo in the README heading | wf-implement | none | wf-plan, frontend-craft |
 | 5 | зроби ревʼю мого PR на цій гілці | wf-review | none | wf-peer-review, wf-implement, wf-plan |
 | 6 | review my staged diff before I commit it | wf-review | none | wf-peer-review, wf-implement |
 | 7 | пройдись по PR колеги https://github.com/acme/app/pull/7 | wf-peer-review | none | wf-review, wf-implement |
 | 8 | Walk me through someone else's pull request that adds a Reanimated bottom sheet | wf-peer-review | react-native-animations | wf-review, wf-implement |
 | 9 | глянь коментарі бота на моєму PR і підкажи що відповісти | wf-review | none | wf-peer-review, wf-implement |
-| 10 | оціни скільки годин піде на цю задачу | wf-estimate | none | wf-jira-task, wf-plan, wf-worklog |
-| 11 | How many hours would the plan in .claude/plans/PROJ-40-filters.md take? | wf-estimate | none | wf-plan, wf-implement |
-| 12 | створи jira задачу на рефакторинг навігації | wf-jira-task | none | wf-estimate, wf-implement |
-| 13 | Write a Jira ticket for this crash with an hour estimate | wf-jira-task + wf-estimate | none | wf-implement, wf-worklog |
-| 14 | залогуй мені години за вчора | wf-worklog | none | wf-estimate, wf-jira-task |
-| 15 | close my week in Tempo | wf-worklog | none | wf-estimate |
+| 10 | оціни скільки годин піде на цю задачу | none | none | any wf-* |
+| 11 | How many hours would the plan in .claude/plans/PROJ-40-filters.md take? | none | none | any wf-* |
+| 12 | створи jira задачу на рефакторинг навігації | wf-jira-task | none | wf-implement |
+| 13 | Write a Jira ticket for this crash with an hour estimate | wf-jira-task | none | wf-implement, wf-worklog |
+| 14 | залогуй мені години за вчора | wf-worklog | none | wf-jira-task |
+| 15 | close my week in Tempo | wf-worklog | none | none |
 | 16 | add a swipe-to-dismiss gesture with a light haptic to the toast component | wf-implement | react-native-animations, frontend-craft | wf-plan |
 | 17 | чи вплине client-side рендеринг сторінок категорій на органічний пошук? | none | seo | wf-plan, wf-implement |
 | 18 | the pose model runs at 12 fps on iPhone and the log shows unassigned nodes — make it faster | wf-implement or wf-debug | realtime-vision-pipeline, apple-neural-engine | wf-plan |
@@ -36,7 +37,7 @@ skill-creator and the like) count as must-not wherever a project skill covers th
 | 26 | the product list scroll became janky after the last release | wf-debug | frontend-craft | wf-plan |
 | 27 | add a new skill to ai-god for writing release notes | wf-implement or none, and reads the root `AGENTS.md` of ai-god (maintenance rules) | none | skill-creator, wf-plan |
 | 28 | Implement this Figma frame as a component: https://www.figma.com/design/xyz/Cards?node-id=4-5 | wf-implement | figma-inspect, frontend-craft | figma-design-to-code, design-in-figma, wf-plan |
-| 29 | сплануй епік з пʼяти задач для нового модуля оплат | wf-plan | none | wf-implement, wf-estimate |
+| 29 | сплануй епік з пʼяти задач для нового модуля оплат | wf-plan | none | wf-implement |
 | 30 | після ревʼю свого PR я прийняв дві знахідки з пʼяти — що далі? | wf-retro | none | wf-plan, wf-peer-review |
 
 Cases 24–27 have no route before AIGOD-v2 step 6–7 (`wf-debug`, the "no stage matches" row); they

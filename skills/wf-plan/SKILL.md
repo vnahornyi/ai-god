@@ -1,6 +1,6 @@
 ---
 name: wf-plan
-description: Use when the developer asks for a plan ("сплануй", "plan TASK") or a task is too large or ambiguous to start safely.
+description: Use when the developer asks for a plan ("plan TASK", plan this task or epic) or a task is too large or ambiguous to start safely.
 ---
 
 # wf-plan — plan one task
@@ -10,7 +10,7 @@ Goal: one markdown plan for one task. Two readers use it:
 - **the implementation model** (a junior one) — it must be able to follow every step without
   deciding anything: where code goes, what it is called, which existing shape to copy;
 - **the developer** — reads the per-step scope fields and sizes the work themselves. The plan holds
-  no hours; a number comes only from `wf-estimate` on request.
+  no hours: the estimate is the developer's, made from §10.
 
 Hard rules:
 
@@ -138,14 +138,16 @@ Written for a human tester without code access:
 - **Regressions** — derived from the audit: for every touched module, the existing flows that
   consume it. Shared code gives regression rows to every consuming platform.
 
-## Phase 5 — Estimation inputs, not hours
+## Phase 5 — Scope of work, not hours
 
-Fill §10 from the step scope fields: one row per step plus "what is most likely to blow the scope".
-Write no hours and no gradation. When the developer asks for a number, that is `wf-estimate`, and its
-result goes to the chat, never into the plan.
+Fill §10 so the developer can estimate it themselves: the table from the step scope fields, then a
+plain-language breakdown per step — what has to be read, written, verified and agreed, on which
+platforms, and what would make it longer. Name the work outside the steps (ramp-up on legacy code,
+waiting on people, device testing, regression, review rounds). Write no hours, no gradation and no
+estimate, even when asked: say the number is the developer's and point to §10.
 
 ## Finish
 
 Mark questions that must be answered before implementation `[BLOCKING]`. Report the plan path, a
-short summary of scope and approach, key risks and open questions — in the developer's language,
-while the plan stays in English. Create no other file.
+short summary of scope and approach, key risks and open questions — in the session language
+(global instructions → Language), while the plan stays in English. Create no other file.

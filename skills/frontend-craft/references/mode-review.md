@@ -14,7 +14,7 @@ The four things that must happen every time, in order:
 
    Then ask the question the diff cannot answer: **after this merges, who still has the reported problem?** A change can be correct in every line and still cover a smaller population than the one that has the bug — clients that never update, data already written, callers added next month, the other platform. This is the most expensive finding a review can produce and the one most often missed, because the code reads as finished and the description reads as thorough. `references/problem-framing.md` has the lenses; a description made entirely of ✅ and arguments in favour is itself a tell.
 3. **Read the code *around* the diff.** Most real defects live in the interaction between new and existing code, not inside the new lines.
-4. **Kill your own findings before reporting them.** Is the anchor inside the change, or pre-existing? Does a guard, a type, a caller, or a test already prevent it? Does the ticket actually ask for the behaviour you're calling a bug? A finding that applies a rule where `references/examples-house-style.md` says "Does not apply when" is not a finding.
+4. **Kill your own findings before reporting them.** Is the anchor inside the change, or pre-existing? Does a guard, a type, a caller, or a test already prevent it? Does the ticket actually ask for the behaviour you're calling a bug? A finding that applies a rule where `references/house-style.md` says "Does not apply when" is not a finding.
 
 Order findings by **P0 → P3**, and within a severity by what hurts: correctness → regression risk → missing states → a11y/platform → performance → structure → style. Structure and style go last and stay short; a review that leads with naming preferences buries the bug.
 
@@ -54,4 +54,4 @@ Working someone else's review comments is not Build with a shorter prompt. Comme
 
 A comment asking for less diff — formatting churn, unrelated fixture swaps, editor config — is a real fix, not a style quibble: revert those files to base and re-apply your feature hunks on top of the base formatting. Verify afterwards that the file's diff is only your hunks, and never re-run the formatter over it.
 
-End the round with the same shape as Gate 3, plus, per comment: fixed / already fixed on head (with the line) / needs the user's decision — and a draft reply for the threads you are not closing with code.
+End the round with the same shape as Gate 3, plus, per comment: fixed / already fixed on head (with the line) / needs the user's decision — and, for the threads you are not closing with code, what the reply needs to say and the evidence, not the reply itself (global instructions → Publishing).

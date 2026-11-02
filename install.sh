@@ -141,6 +141,16 @@ install_project_skills_claude() {
   done
 }
 
+# Personal skills (local/skills/<name>) are private and global: linked next to the public skills in
+# every runtime.
+link_personal_skills() {
+  local dir="$1" skill
+  for skill in "$OVERLAY"/skills/*/; do
+    [ -f "${skill}SKILL.md" ] || continue
+    link "${skill%/}" "$dir/$(basename "$skill")"
+  done
+}
+
 # Runtimes without a git-ignored project skills dir get project skills next to the global ones;
 # each project skill's description limits it to its project.
 link_project_skills_flat() {
@@ -193,6 +203,7 @@ install_claude_skills() {
     [ -f "${skill}SKILL.md" ] || continue
     link "${skill%/}" "$dir/$(basename "$skill")"
   done
+  link_personal_skills "$dir"
   prune_stale "$dir"
 }
 
@@ -223,6 +234,7 @@ install_codex() {
     [ -f "${skill}SKILL.md" ] || continue
     link "${skill%/}" "$CODEX_DIR/skills/$(basename "$skill")"
   done
+  link_personal_skills "$CODEX_DIR/skills"
   link_project_skills_flat "$CODEX_DIR/skills"
   prune_stale "$CODEX_DIR/skills"
   for rules in "$REPO"/adapters/codex/rules/*.rules; do
@@ -240,6 +252,7 @@ install_copilot() {
     [ -f "${skill}SKILL.md" ] || continue
     link "${skill%/}" "$dir/skills/$(basename "$skill")"
   done
+  link_personal_skills "$dir/skills"
   link_project_skills_flat "$dir/skills"
   prune_stale "$dir/skills"
 }

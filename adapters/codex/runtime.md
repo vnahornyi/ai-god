@@ -97,7 +97,7 @@ self-check independent.
 Browser and computer-use capability is session-dependent. At session start, inspect the listed tools
 for a signed-in tab, navigation, page text or JavaScript evaluation, and screenshots. If none can use
 the developer's logged-in session, the Jira and Figma recipes do not apply — ask the developer to paste
-the timesheet (wf-worklog fallback) or to provide the design (figma-inspect stops).
+the data (a personal skill's fallback) or to provide the design (figma-inspect stops).
 Use the external, signed-in browser for every URL, `localhost` included.
 
 ## Review engine

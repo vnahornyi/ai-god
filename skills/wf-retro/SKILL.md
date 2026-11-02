@@ -45,7 +45,7 @@ missing; `<project>` is the directory name under `~/Developer`). One row per tas
 ```markdown
 ---
 name: implementation-log
-description: One row per implemented task — implementer model, review findings by cause, verdict; read by wf-retro for model and skill advice and by wf-estimate for recalibration
+description: One row per implemented task — implementer model, review findings by cause, verdict; read by wf-retro for model and skill advice
 metadata:
   type: project
 ---
@@ -54,7 +54,7 @@ metadata:
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 ```
 
-`Dev est. h` is the plan's Development line from `wf-estimate`, and `Actual h` the developer's figure;
+`Dev est. h` is the developer's own estimate, and `Actual h` the developer's figure;
 write `—` when either is unknown — never estimate them here. `Note` names the skill section or rule
 behind each `skill` finding.
 
@@ -80,7 +80,7 @@ not a skill line. Skill-change advice follows `docs/writing-for-agents.md` in th
 
 ## Output
 
-To the developer, in their language (Ukrainian by default), short:
+To the developer, in the session language (global instructions → Language), short:
 
 ```
 Implementer: <model · effort>   Window: n/5

@@ -1,6 +1,6 @@
 ---
 name: wf-peer-review
-description: Use when the developer asks to go through someone else's pull request — "пройдись по PR", "глянь чужий PR", a colleague's PR number or URL.
+description: Use when the developer asks to go through someone else's pull request — walk through a colleague's PR, a PR number or URL that is not theirs.
 ---
 
 # wf-peer-review — what deserves attention, and how to read the rest
@@ -12,8 +12,8 @@ project's linter or rules do not require.
 Capability: STRONG_GENERAL; FRONTIER_REASONING for security, data-loss or architectural PRs.
 Read `wf-review` → `references/review-contract.md` (scope, severity, finding contract, second pass)
 and `references/ai-review-guard.md` — run it on your own candidates and on every bot comment already
-on the PR — and `references/ai-review-replies.md` for drafting replies and for the learning loop
-once the developer has answered those comments.
+on the PR — and `references/ai-review-replies.md` for explaining each bot comment and for the
+learning loop once the developer has answered those comments.
 
 ## Steps
 
@@ -42,22 +42,24 @@ violated project rule. Nothing else is reported.
 ## Output
 
 ```markdown
-## Варто звернути увагу (N)
+## Worth attention (N)
 1. **[P1] <defect as a title>** — `file:line`
-   Що: … · Чому важливо: <failure scenario> · Джерело очікування: <ticket / doc / rule / contract>
-   Питання автору: "<polite, ready to paste>"
+   What: … · Why it matters: <failure scenario> · Where the expectation comes from: <ticket / doc / rule / contract>
+   What to raise with the author: <the point and its evidence, in your words, not a comment to paste>
 …
 
-## Не перевірено
+## Not verified
 - …
 
-## Як пройти цей PR самому
+## How to walk this PR yourself
 <the route from references/walkthrough.md, filled with this PR's files>
 ```
 
-Language: the developer's (Ukrainian by default); quoted code and identifiers stay verbatim.
+Write this report in English and translate it into the session language when you show it
+(global instructions → Language); quoted code and identifiers stay verbatim.
 
 ## Posting
 
-Never post, approve, request changes or resolve threads on your own. Only when the developer
-explicitly asks: show the exact comment texts and their anchors, then post them as asked.
+Nothing is posted (global instructions → Publishing): no comment, approval, change request or
+resolved thread, even when the developer asks. The report explains each point; the developer writes
+and posts any comment themselves.

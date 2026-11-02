@@ -66,8 +66,8 @@ reviewer, write "not available — a new session is required".
 
 Which tool reaches the developer's signed-in browser (Jira/Tempo, Figma), how to load it, and its
 quirks (promises, truncation, blocked patterns). Every URL, `localhost` included, goes to that
-external browser. "Not available" is a valid answer; wf-worklog
-then asks the developer to paste data, and figma-inspect stops and asks for the values.
+external browser. "Not available" is a valid answer; a skill that needs the browser then asks the
+developer to paste the data, and figma-inspect stops and asks for the values.
 
 ## Context and usage signal
 

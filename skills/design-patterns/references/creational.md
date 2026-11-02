@@ -5,15 +5,15 @@ or "a map", and the class hierarchy in the textbook version is optional.
 
 ## Contents
 
-- [Factory Method](#factory-method--фабричний-метод)
-- [Abstract Factory](#abstract-factory--абстрактна-фабрика)
-- [Builder](#builder--будівельник)
-- [Prototype](#prototype--прототип)
-- [Singleton](#singleton--одинак)
+- [Factory Method](#factory-method)
+- [Abstract Factory](#abstract-factory)
+- [Builder](#builder)
+- [Prototype](#prototype)
+- [Singleton](#singleton)
 
 ---
 
-## Factory Method · Фабричний метод
+## Factory Method
 
 **Idea.** Callers ask for "a thing of this kind" through one creation point; which concrete thing
 comes back is decided in that point (or by whoever overrides it), not at every call site.
@@ -64,7 +64,7 @@ behavior of an existing object, not which object is created).
 
 ---
 
-## Abstract Factory · Абстрактна фабрика
+## Abstract Factory
 
 **Idea.** One object produces a whole *family* of related things that are guaranteed to match
 each other; switch the factory and every member switches together.
@@ -103,7 +103,7 @@ step by step); a theme object that holds only values is just configuration, not 
 
 ---
 
-## Builder · Будівельник
+## Builder
 
 **Idea.** Construct a complex thing in explicit steps instead of one call with a long parameter
 list; the same steps can yield different results.
@@ -143,7 +143,7 @@ builder often produces).
 
 ---
 
-## Prototype · Прототип
+## Prototype
 
 **Idea.** Make new objects by copying a configured existing one, without the copier knowing its
 concrete type.
@@ -175,7 +175,7 @@ on every render; clone objects holding live resources (sockets, native handles).
 
 ---
 
-## Singleton · Одинак
+## Singleton
 
 **Idea.** Exactly one instance, reachable from anywhere.
 

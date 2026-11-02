@@ -39,7 +39,10 @@
       "Bash(git -C * rebase*)",
       "Bash(git -C * reset --hard*)",
       "Bash(git -C * branch -D*)",
-      "Bash(gh repo sync*)"
+      "Bash(gh repo sync*)",
+      "Bash(gh pr comment*)",
+      "Bash(gh pr review*)",
+      "Bash(gh issue comment*)"
     ]
   },
   "enabledPlugins": {
