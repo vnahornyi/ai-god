@@ -10,8 +10,9 @@ prefix_rule(
 )
 
 # The one sanctioned push: fast-forward of ai-god main, run after the developer approved the commit.
+# install.sh writes the same rule for this checkout's absolute path to ~/.codex/rules/ai-god-push.rules.
 prefix_rule(
-    pattern = [["/Users/vnahornyi/Developer/ai-god/bin/push-ai-god", "~/Developer/ai-god/bin/push-ai-god"]],
+    pattern = ["~/Developer/ai-god/bin/push-ai-god"],
     decision = "allow",
     justification = "AGENTS.md Git rule 7: ai-god commits approved in chat are pushed by the agent.",
 )
@@ -60,9 +61,15 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern = ["git", "stash", ["drop", "clear"]],
+    pattern = ["git", "stash", ["drop", "clear", "pop"]],
     decision = "forbidden",
-    justification = "Dropping stashes is the developer's (AGENTS.md Git rule 4).",
+    justification = "Dropping stashes is the developer's (AGENTS.md Git rule 4); `pop` drops the stash it applies.",
+)
+
+prefix_rule(
+    pattern = ["git", "stash", "apply"],
+    decision = "forbidden",
+    justification = "Applying a stash rewrites the developer's working tree; restoring stashed work is the developer's.",
 )
 
 prefix_rule(

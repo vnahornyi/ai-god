@@ -180,7 +180,7 @@ When `command -v claude` finds the CLI, the terminal form is
 - `~/.claude/settings.json` is the local overlay's `claude/settings.json`, which carries every entry of
   the public policy `adapters/claude/settings.base.json` (`install.sh --check` verifies it) plus
   personal keys such as `autoMode`, which Claude Code reads only from user settings: `git push`,
-  `git add .`/`-A`, amend, `--no-verify`, rebase, `reset --hard`, `git stash` (push, save, drop, clear)
+  `git add .`/`-A`, amend, `--no-verify`, rebase, `reset --hard`, `git stash` (push, save, pop, apply, drop, clear)
   and branch deletion denied — stash push added after two eval runs stashed to test old code
   (flags written after other arguments are covered for `add` and `commit` only),
   `bin/push-ai-god` allowed. The desktop app and `claude plugin install` write into it (theme,
@@ -189,7 +189,9 @@ When `command -v claude` finds the CLI, the terminal form is
 - `switchModelsOnFlag: false` — when a request is flagged and refused, do not switch the session to
   a fallback model automatically.
 - Plugin `tempad-dev` (TemPad Dev MCP + lifecycle hooks that only send the session id and event name
-  to a local socket). Its MCP runs `npx -y @tempad-dev/mcp@latest`.
+  to a local socket). Its MCP runs `npx -y @tempad-dev/mcp@latest`. A personal integration, so it is
+  enabled in the overlay's settings, not the base; without it `figma-inspect` uses its browser
+  fallback. Install it from the `ecomfe/tempad-dev` marketplace to get the MCP path.
 - No hooks of our own. Rely on the conversation summary for continuity; no handoff file.
 
 ## Skills and instructions

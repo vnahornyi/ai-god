@@ -126,9 +126,10 @@ establishes intent from the task and its sources.
 ## Permissions
 
 - `adapters/codex/rules/ai-god.rules` → `~/.codex/rules/`: `git push`, `gh repo sync`, `git add .`/`-A`,
-  `git commit --amend`/`--no-verify`, `git rebase`, `git reset --hard`, `git stash drop`/`clear` and
+  `git commit --amend`/`--no-verify`, `git rebase`, `git reset --hard`, `git stash drop`/`clear`/`pop`/`apply` and
   `git branch -D`, `git stash push`/`save`/`-u` forbidden (a bare `git stash` cannot be matched apart from
-  `git stash list`); `bin/push-ai-god` allowed. Prefix rules match leading tokens only, so a
+  `git stash list`); `bin/push-ai-god` allowed (install.sh writes its absolute-path form to
+  `~/.codex/rules/ai-god-push.rules`). Prefix rules match leading tokens only, so a
   flag placed after other arguments is not caught — the Git rules still apply. *Unverified on this
   machine: the `codex` CLI was not installed on 2026-11-01; check with
   `codex execpolicy check --rules adapters/codex/rules/ai-god.rules git rebase`.*

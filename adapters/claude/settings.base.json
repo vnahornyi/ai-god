@@ -2,7 +2,7 @@
   "permissions": {
     "allow": [
       "Bash(~/Developer/ai-god/bin/push-ai-god)",
-      "Bash(/Users/vnahornyi/Developer/ai-god/bin/push-ai-god)"
+      "Bash(@AI_GOD_REPO@/bin/push-ai-god)"
     ],
     "deny": [
       "Bash(git push)",
@@ -28,6 +28,12 @@
       "Bash(git -C * stash push*)",
       "Bash(git stash drop*)",
       "Bash(git stash clear*)",
+      "Bash(git stash pop*)",
+      "Bash(git stash apply*)",
+      "Bash(git -C * stash pop*)",
+      "Bash(git -C * stash apply*)",
+      "Bash(git -C * stash drop*)",
+      "Bash(git -C * stash clear*)",
       "Bash(git branch -D*)",
       "Bash(git branch --delete --force*)",
       "Bash(git branch -d -f*)",
@@ -44,21 +50,6 @@
       "Bash(gh pr review*)",
       "Bash(gh issue comment*)"
     ]
-  },
-  "enabledPlugins": {
-    "tempad-dev@tempad-dev": true
-  },
-  "extraKnownMarketplaces": {
-    "tempad-dev": {
-      "source": {
-        "source": "github",
-        "repo": "ecomfe/tempad-dev",
-        "sparsePaths": [
-          ".claude-plugin",
-          "agent-plugin/targets/claude"
-        ]
-      }
-    }
   },
   "effortLevel": "medium",
   "switchModelsOnFlag": false

@@ -17,7 +17,9 @@ means editing one adapter table, not a skill.
 
 ## Capability classes
 
-**FRONTIER_REASONING** — the strongest reasoning the runtime offers, at high effort.
+**FRONTIER_REASONING** — the strongest reasoning model the runtime offers, at the effort its adapter
+maps; high effort for the high-risk cases (security, data loss, architecture, a materially ambiguous
+review or escalation), mapped separately wherever the runtime exposes effort.
 Planning with unresolved product or architecture decisions · difficult debugging · independent
 review and the fix decision for every finding ·
 cross-platform architecture · resolving a substantive conflict between requirements and code.

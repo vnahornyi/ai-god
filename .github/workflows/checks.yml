@@ -1,0 +1,40 @@
+# Mechanical checks on every push and PR. The leak scan here runs only the generic rules: the
+# private denylist lives in the local overlay, which bin/push-ai-god checks before pushing.
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Skills lint
+        run: |
+          bin/lint-skills
+          bin/lint-skills --self-test
+
+      - name: Public-tree scan (generic rules)
+        run: |
+          bin/check-public
+          bin/check-public --self-test
+
+      - name: Syntax
+        run: |
+          for f in install.sh bin/push-ai-god .githooks/*; do bash -n "$f"; done
+          git ls-files '*.json' | xargs -I{} python3 -m json.tool {} /dev/null
+          python3 -m py_compile bin/lint-skills bin/check-public bin/token-report evals/routing/grade.py
+
+      - name: Install into a clean home, then check
+        run: |
+          export HOME="$RUNNER_TEMP/home" PROJECTS_ROOT="$RUNNER_TEMP/home/Developer"
+          mkdir -p "$HOME"
+          ./install.sh --agent all
+          ./install.sh --agent all --check

@@ -116,6 +116,9 @@ With no `--agent`, it installs for each detected runtime: Claude Code, Codex, th
 interfaces), or `--agent all`.
 
 - Existing real files are moved aside to `*.pre-ai-god`, never deleted.
+- Keep the checkout at `~/Developer/ai-god`: the global instructions and skills name that path.
+  The permission rules that need an absolute path (`push-ai-god`) are written by `install.sh` for
+  the checkout it runs from.
 - Projects outside `~/Developer`: `PROJECTS_ROOT=/path ./install.sh`.
 - Non-default config dirs: `CLAUDE_CONFIG_DIR`, `CODEX_HOME`, and `COPILOT_HOME` are respected for
   the CLI. The VS Code Copilot Agent Host uses `~/.copilot`.

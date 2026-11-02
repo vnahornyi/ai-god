@@ -162,22 +162,23 @@ link_project_skills_flat() {
 }
 
 # ~/.claude/settings.json is the overlay's full file (base policy + personal keys such as autoMode,
-# which Claude Code reads only from user settings). First install copies the public base.
+# which Claude Code reads only from user settings). First install copies the public base, with
+# @AI_GOD_REPO@ replaced by this checkout's absolute path.
 install_claude_settings() {
   local base="$REPO/adapters/claude/settings.base.json" own="$OVERLAY/claude/settings.json"
   if [ ! -f "$own" ]; then
     case "$MODE" in
       check) echo "DRIFT   $own missing (install copies $base)"; drift=1; return 0 ;;
       dry-run) echo "create  $own from $base" ;;
-      *) mkdir -p "$(dirname "$own")"; cp "$base" "$own"; echo "created $own from $base" ;;
+      *) mkdir -p "$(dirname "$own")"; sed "s#@AI_GOD_REPO@#$REPO#g" "$base" > "$own"; echo "created $own from $base" ;;
     esac
   fi
   link "$own" "$CLAUDE_DIR/settings.json"
   [ -f "$own" ] || return 0
   # Every base permission must survive in the personal file.
-  if ! python3 -I - "$base" "$own" <<'PY'
+  if ! python3 -I - "$base" "$own" "$REPO" <<'PY'
 import json, sys
-base, own = (json.load(open(p)) for p in sys.argv[1:3])
+base, own = (json.loads(open(p).read().replace("@AI_GOD_REPO@", sys.argv[3])) for p in sys.argv[1:3])
 missing = [f"{k}: {r}" for k in ("allow", "deny")
            for r in base.get("permissions", {}).get(k, [])
            if r not in own.get("permissions", {}).get(k, [])]
@@ -241,6 +242,30 @@ install_codex() {
     link "$rules" "$CODEX_DIR/rules/$(basename "$rules")"
   done
   prune_stale "$CODEX_DIR/rules"
+  install_codex_push_rule
+}
+
+# The push allow rule needs this checkout's absolute path, so it is written, not linked.
+install_codex_push_rule() {
+  local file="$CODEX_DIR/rules/ai-god-push.rules" want
+  want="$(cat <<EOF
+# Written by $REPO/install.sh — the absolute-path form of the push-ai-god allow rule in ai-god.rules.
+prefix_rule(
+    pattern = ["$REPO/bin/push-ai-god"],
+    decision = "allow",
+    justification = "AGENTS.md Git rule 7: ai-god commits approved in chat are pushed by the agent.",
+)
+EOF
+)"
+  if [ -f "$file" ] && [ "$(cat "$file")" = "$want" ]; then
+    [ "$MODE" = check ] && echo "ok      $file"
+    return 0
+  fi
+  case "$MODE" in
+    check) echo "DRIFT   $file missing or stale"; drift=1 ;;
+    dry-run) echo "write   $file" ;;
+    *) mkdir -p "$(dirname "$file")"; printf '%s\n' "$want" > "$file"; echo "wrote   $file" ;;
+  esac
 }
 
 install_copilot() {
