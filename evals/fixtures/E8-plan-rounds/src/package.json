@@ -1,0 +1,7 @@
+{
+  "name": "shop-mobile",
+  "private": true,
+  "scripts": { "test": "jest", "typecheck": "tsc --noEmit", "lingui:extract": "lingui extract" },
+  "dependencies": { "react": "19.2.0", "react-native": "0.82.0", "@lingui/react": "5.5.0" },
+  "devDependencies": { "jest": "30.2.0", "@testing-library/react-native": "13.3.0", "typescript": "5.9.3" }
+}

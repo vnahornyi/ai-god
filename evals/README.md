@@ -3,7 +3,8 @@
 Small fixed tasks that measure whether a skill change helps the STRONG_GENERAL implementer, compared
 with FRONTIER_REASONING on the same task. Rerun after any change to `frontend-craft`, `wf-plan` or
 `wf-implement`; rerun E5 after any change to `react-native-animations`; rerun E6 after any change to
-`wf-debug`; rerun the routing eval after any change to `ai-workflow`, a skill description or the
+`wf-debug`; rerun E7 after any change to `wf-review` or its references and E8 after any change to
+`wf-plan`; rerun the routing eval after any change to `ai-workflow`, a skill description or the
 global instructions' routing section.
 
 ## Layout
@@ -48,3 +49,14 @@ answers to questions, record them in the report."
 the repo and give each runner the brief at the bottom of `cases.md` (FRONTIER_REASONING,
 STRONG_GENERAL and the background mapping, one run each). Save each returned table and grade with
 `python3 evals/routing/grade.py <run>.md ...`.
+
+## Review and planning fixtures (E7, E8)
+
+`E7-spec-axis` is a diff (`src/promo.ts`) against a ticket with planted spec defects; the runner is
+the second cold reviewer with `Axis: spec` (`wf-review` → Spec axis), told not to run the review
+engine. `E8-plan-rounds` is a small React Native tree in `src/` and a planning request; the runner
+follows `wf-plan`, the developer is away, and the report carries the question rounds exactly as they
+would be sent, with the plan written to the run directory. Run each on STRONG_GENERAL and
+FRONTIER_REASONING; for a skill change, add the previous version of the skill (`git archive <commit>
+skills/<name>`) on FRONTIER_REASONING as the comparison.
+
