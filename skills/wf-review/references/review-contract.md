@@ -106,17 +106,14 @@ Then: **the narrow fix.** The smallest change that removes the defect — not th
 
 ## Second pass
 
-Do not report the first list you produce. Take every candidate and try to kill it:
+Do not report the first list you produce. Run every candidate through the gates in
+`ai-review-guard.md` — premise, base, reachability, failure rate, blast radius, project rules,
+severity, scope — the same gates a developer will use to cut your review. Then ask what the gates do
+not:
 
-- Is the anchor **inside the reviewed change**, or was this already true before the diff? Pre-existing issues are not this review's findings — mention at most the ones the change makes materially worse, and label them as pre-existing.
-- Does the surrounding code, a guard further up, a type, or a caller already prevent it?
 - Do the tests already cover it, and pass?
 - Does the ticket explicitly ask for the behaviour you're calling a bug?
 - Is the "missing" thing handled somewhere you didn't look — a shared wrapper, a provider, a platform file?
-
-Run the gates in `ai-review-guard.md` on every candidate — they are the same gates a developer will use to cut your review.
-
-Delete on sight, at this stage: style preferences, speculative architecture, "consider extracting", anything whose evidence is your own assumption, and anything disproven by the code you just read.
 
 A review of three findings that all survive this pass is worth more than twelve that don't, because the user reads the first three and trusts them.
 
@@ -128,8 +125,8 @@ A review comment on your own change — from a person or from a bot — is a hyp
 
 Work it in this order:
 
-1. **Verify the premise in the code, not in the comment.** "Cached in persisted storage" is checkable in one file; so is "this runs before that". Quote what you found.
-2. **If the premise is wrong, the concern can still be right.** Restate the narrowest version that *is* true given the real mechanism, and test that one. A false premise is a reason to correct the reviewer's mental model, never a reason to skip the sweep they were pointing at.
+1. **Verify the premise in the code, not in the comment** (`ai-review-guard.md` gate 1), and quote what you found.
+2. **If the premise is wrong, the concern can still be right.** Restate the narrowest version that *is* true given the real mechanism, and test that one; a false premise never skips the sweep the reviewer was pointing at.
 3. **Check the current head.** Feedback anchors to the commit it was written against; a later push may already have closed it. Say so with the commit, rather than re-arguing it.
 4. **Then answer both parts explicitly** — what is factually off, what survives, what you changed. A reply that only refutes reads as defensive even when it is correct.
 

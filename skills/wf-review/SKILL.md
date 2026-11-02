@@ -5,6 +5,8 @@ description: Use when the developer asks to review their own change ("зроби
 
 # wf-review — review your own change, cold
 
+Without this skill the agent reviews a change in the context that wrote it, agrees with its own reasoning, and reports guessed premises as findings the developer then has to defend against.
+
 Capability: FRONTIER_REASONING — the review assigns severity and decides the fix for every finding;
 the fixing session only implements it (`ai-workflow` → model policy). Read `references/review-contract.md` before the diff.
 

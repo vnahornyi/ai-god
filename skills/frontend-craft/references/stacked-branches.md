@@ -1,0 +1,10 @@
+# Stacked branches — a feature split across a chain of PRs
+
+Read before writing code, answering review or judging a defect claim on any branch in a stack, in Build or Review mode.
+
+A stack is one feature; a branch in it is only a checkpoint. Two failure modes, both invisible inside a single diff:
+
+- **Stale parents.** Before doing anything on a branch in a stack — writing code, answering a review, judging whether a defect is real — verify each link is actually descended from the one below it: `git merge-base --is-ancestor origin/<parent> origin/<child>` for every pair, and merge downward until all of them pass. A branch cut from an older parent commit silently *un-does* fixes that landed below it. The symptom is a reviewer reporting a defect you fixed days ago, or a fix that "exists" in the repo yet is absent from the tip — and the temptation is to dismiss both as review noise. Never conclude "already fixed upstack" or "already broken downstack" from reading branch heads until the chain is verified; a stale link makes both claims wrong in opposite directions.
+- **Expired promises.** A stack is where deferred work gets written into the code: a `TODO(NEXT-TICKET)`, a temporary filter, a const introduced for a consumer that arrives one PR later. Each one is a debt against a specific later branch, and nothing fails when that branch lands without paying it. Grep the whole stack for the next ticket's id, for constants with no reference, and for comments phrased "until X" — then check the tip, not the branch that wrote them. A const defined and never imported, and a workaround whose stated precondition has already been met, both read as intentional in isolation.
+
+Judge every defect claim against the **stack tip** as well as the branch it was filed on, and say which one you checked. A defect that only exists at an intermediate head is a transient state, not a merge blocker — but say so explicitly rather than leaving the reviewer to guess, and confirm the successor really does close it.

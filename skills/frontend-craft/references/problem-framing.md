@@ -178,13 +178,7 @@ Note what is *not* wrong with the original: the code quality, the tests, the nar
 
 ## Sources
 
-- Alexis King, [*Parse, don't validate*](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) — parse at the boundary into a type that cannot hold an invalid value.
-- [*Make Illegal States Unrepresentable*](https://functional-architecture.org/make_illegal_states_unrepresentable/) (Yaron Minsky's formulation) — the type system as the enforcement mechanism.
-- Malte Ubl, [*Version Skew*](https://www.industrialempathy.com/posts/version-skew/) — deployments are never atomic; clients may never update; backward/forward compatibility obligations.
-- [Client-side vs server-side validation](https://www.packetlabs.net/posts/input-validation/) — client checks are UX, server checks are enforcement.
-- AWS, [*Best practices for implementing partial batch responses*](https://docs.aws.amazon.com/prescriptive-guidance/latest/lambda-event-filtering-partial-batch-responses-for-sqs/best-practices-partial-batch-responses.html) and StratusGrid, [*Batch requests & poison pills*](https://stratusgrid.com/blog/aws-kinesis-how-to-overcome-batch-requests-poison-pills) — one bad item must not fail the batch.
-- [Prometheus label best practices](https://oneuptime.com/blog/post/2026-01-30-prometheus-label-best-practices/view) and [High cardinality in practice](https://last9.io/blog/how-to-manage-high-cardinality-metrics-in-prometheus/) — never use identifiers or concrete URLs as label values; normalize to route templates.
-- [One-way vs two-way door decisions](https://thoughtbot.com/blog/one-way-vs-two-way-door-decisions) — match rigour to reversibility.
-- Martin Fowler, [Technical Debt Quadrant](https://martinfowler.com/bliki/TechnicalDebtQuadrant.html) — deliberate and prudent debt is legitimate; the deliberate part means someone was told.
-- Richard Bown, [*Is the path of least resistance good software engineering?*](https://richardwbown.com/is-the-path-of-least-resistance-sometimes-the-right-choice/) — the short path is only short if it hits the brief and adds no invisible debt.
-- [5 Whys root cause analysis](https://www.mindtools.com/a3mi00v/5-whys) — and its limits: linear causal chains, honest answers required.
+Alexis King, *Parse, don't validate*; Yaron Minsky, *Make illegal states unrepresentable*; Malte Ubl,
+*Version Skew*; AWS, partial batch responses; Prometheus label cardinality guidance; one-way vs
+two-way door decisions; Martin Fowler, *Technical Debt Quadrant*; Richard Bown, *path of least
+resistance*; 5 Whys and its limits. Links: this file at ai-god commit `ac54a7c`.

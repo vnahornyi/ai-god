@@ -5,6 +5,8 @@ description: Use when React or React Native code is in scope of a plan, an imple
 
 # Frontend Craft
 
+Without this skill the agent ships code that is right on the screen it looked at: a shared component broken on another screen, state that outlives its identity, a hardcoded string, an invented style value, a check reported green that never ran.
+
 Goal: work that reaches QA with zero defects. Not "it compiles" — nothing left for a tester to find.
 
 The user is a senior engineer with a heavy workload. Their failure mode is not bad architecture; it is **small, visible things slipping through under time pressure** — a shared component broken on a screen they never opened, a `console.log`, a hardcoded string, a spacing that drifted from the design. This skill exists to be the pair of fresh eyes they don't have time to be.
@@ -120,5 +122,6 @@ Load these when the work touches them — don't read all of them by reflex.
 | `references/worst-case-data.md` | A component that renders data — names, counts, prices, dates, images, lists: map every rendered value to its limit, feed plausible worst cases, report what breaks |
 | `react-native-animations` skill | Motion, gestures or haptics in scope — building them, or reviewing a diff that adds or changes them |
 | `references/regression.md` | Planning, and before every Gate 2 — blast-radius method and the QA checklist generator |
+| `references/stacked-branches.md` | **Before any work on a branch in a stack** — verify the chain, find expired promises, judge defects against the tip |
 | `references/testing.md` | Writing or reviewing tests (Jest + Testing Library) |
 | `references/examples-house-style.md` | **Before writing or reviewing component code.** Bad / good / over-applied pairs for ternaries, conditional rendering, function signatures and comments, each with "does not apply when" |

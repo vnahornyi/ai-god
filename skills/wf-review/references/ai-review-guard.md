@@ -36,7 +36,7 @@ third-party code. Removing a guard that a production trace asked for needs that 
 
 **2. Compared with base.** Run the same reading on the base branch. Behaviour that existed before the
 diff — the same guard, the same log level, the same toast, the same torch effect — is not a finding of
-this PR. At most it is a separate task, labelled pre-existing.
+this PR unless the diff makes it materially worse. At most it is a separate task, labelled pre-existing.
 
 **3. Reachable in this app.** Follow the whole cycle, not one branch: guards further up
 (`isActive`, a lock, `disabled` while pending), the configured formats and options, the lifecycle
