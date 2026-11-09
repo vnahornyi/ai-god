@@ -11,6 +11,13 @@ anywhere in the row, and no must-not skill appears anywhere in the row. A refere
 of the skill, and is removed before matching; the router tells some stages to read another skill's
 reference directly. Case 27's maintenance-file check cannot be read from the table; it is graded on
 the skill columns only and marked `*`.
+
+Two rows the key's matching alone would pass also fail: a skill outside this repo on a case a project
+skill covers (cases.md: third-party skills are must-not there; the review engine that `wf-review`
+and `wf-peer-review` run is not third-party), and a cell that is not a list of skill names, which
+cannot be graded.
+
+  grade.py --self-test            run the built-in cases
 """
 import os
 import re
@@ -27,10 +34,33 @@ def cells(line):
 
 
 REFERENCE = re.compile(r"\b[a-z-]+(?:/| )references/[\w.-]+\.md|\(references/[^)]*\)|\b[a-z-]+ \(references[^)]*\)")
+NAME = re.compile(r"[a-z][a-z0-9-]*(?::[a-z0-9-]+)?")
 
 
 def names(text):
     return set(SKILL.findall(REFERENCE.sub("", text)))
+
+
+def project_skills():
+    root = os.path.join(HERE, "..", "..", "skills")
+    # wf-worklog is a personal skill in the private overlay; the key names it.
+    return set(os.listdir(root)) | {"wf-worklog"}
+
+
+def foreign_and_unreadable(columns, project):
+    """Skill names outside this repo, and tokens that are not a skill name at all."""
+    foreign, unreadable = set(), []
+    for column in columns:
+        text = re.sub(r"\([^)]*\)", "", REFERENCE.sub("", column)).replace("`", "")
+        for token in re.split(r",|;|\+|\band\b", text):
+            token = token.strip().rstrip(".")
+            if not token or token.lower() == "none" or token in ("—", "-"):
+                continue
+            if not NAME.fullmatch(token):
+                unreadable.append(token)
+            elif token not in project:
+                foreign.add(token)
+    return foreign, unreadable
 
 
 def load_key():
@@ -58,9 +88,10 @@ def load_key():
     return key
 
 
-def grade(path, key):
+def grade(lines, key):
     results = {}
-    for line in open(path, encoding="utf-8"):
+    project = project_skills()
+    for line in lines:
         if not re.match(r"^\|\s*\d+\s*\|", line):
             continue
         c = cells(line)
@@ -78,13 +109,46 @@ def grade(path, key):
         bad = (k["must_not"] & row) | ({s for s in row if s.startswith("wf-")} if k["no_wf"] else set())
         if bad:
             why.append(f"loaded {sorted(bad)}")
+        foreign, unreadable = foreign_and_unreadable(c[1:], project)
+        if row & {"wf-review", "wf-peer-review"}:
+            foreign.discard("code-review")
+        covered = any(k["stage"]) or k["also"] or k["domain"]
+        if covered and foreign:
+            why.append(f"third-party {sorted(foreign)}")
+        if unreadable:
+            why.append(f"unreadable {unreadable}")
         results[n] = why
     return results
 
 
+def self_test():
+    key = load_key()
+    cases = [
+        ("| 4 | wf-implement | none | none |", True),
+        ("| 4 | wf-implement | none | docx, simplify |", False),
+        ("| 5 | wf-review | none | code-review |", True),
+        ("| 4 | wf-implement | none | code-review |", False),
+        ("| 7 | wf-peer-review | none | wf-review/references/ai-review-guard.md |", True),
+        ("| 7 | wf-peer-review | none | wf-review (references only) and all of it |", False),
+        ("| 1 | wf-plan | figma-inspect, frontend-craft (Plan mode) | none |", True),
+        ("| 14 | none | none | wf-worklog |", True),
+        ("| 22 | none | none | deep-research |", True),
+        ("| 22 | wf-plan | none | none |", False),
+    ]
+    failures = 0
+    for row, should_pass in cases:
+        n = int(cells(row)[0])
+        why = grade([row], key)[n]
+        if (not why) != should_pass:
+            failures += 1
+            print(f"FAIL {row} -> {why or 'pass'}")
+    print(f"self-test: {failures} failure(s)")
+    return 1 if failures else 0
+
+
 def main(paths):
     key = load_key()
-    runs = {os.path.basename(p): grade(p, key) for p in paths}
+    runs = {os.path.basename(p): grade(open(p, encoding="utf-8"), key) for p in paths}
     print("| # | " + " | ".join(runs) + " |")
     print("|---|" + "---|" * len(runs))
     for n in sorted(key):
@@ -96,4 +160,6 @@ def main(paths):
 
 
 if __name__ == "__main__":
+    if sys.argv[1:] == ["--self-test"]:
+        sys.exit(self_test())
     main(sys.argv[1:])

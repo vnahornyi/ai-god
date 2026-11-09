@@ -26,6 +26,9 @@ jobs:
           bin/check-public
           bin/check-public --self-test
 
+      - name: Routing grader
+        run: python3 evals/routing/grade.py --self-test
+
       - name: Syntax
         run: |
           for f in install.sh bin/push-ai-god .githooks/*; do bash -n "$f"; done
