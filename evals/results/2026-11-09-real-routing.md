@@ -54,7 +54,7 @@ read-only Glob and Grep added. Raw: `raw/2026-11-09-fixture-*`.
 Most empty-directory misses came from the missing repository, so no router change follows from them.
 Case 27 is the one miss repeated on the same mappings in both conditions. `run_real.py` counts a Read
 of a `SKILL.md` as a load, so a session reading that skill as an example of the format would score the
-same; the raw log does not record which it was. The other misses each appear on one mapping, once.
+same; the first runs did not record which it was. Three reruns each on Opus and Haiku, with `run_real.py` logging how each skill arrived, show `wf-jira-task` was only read every time, so case 27 is a measurement artifact and not a routing miss (`raw/2026-11-09-case27-*`). The table and scores above are left as run. The other misses each appear on one mapping, once.
 In case 33 (commit) Sonnet and Haiku loaded nothing, not even the router; the key accepts that.
 
 ## Decisions from this run

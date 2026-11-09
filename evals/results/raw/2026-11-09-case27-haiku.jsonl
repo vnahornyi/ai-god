@@ -1,0 +1,3 @@
+{"case": 27, "loads": ["ai-workflow", "wf-implement", "seo", "wf-jira-task"], "via": {"ai-workflow": "skill", "wf-implement": "skill", "seo": "read", "wf-jira-task": "read"}, "error": null}
+{"case": 27, "loads": ["ai-workflow", "wf-implement", "wf-jira-task"], "via": {"ai-workflow": "skill", "wf-implement": "read", "wf-jira-task": "read"}, "error": null}
+{"case": 27, "loads": ["ai-workflow", "wf-implement", "wf-jira-task"], "via": {"ai-workflow": "skill", "wf-implement": "read", "wf-jira-task": "read"}, "error": null}

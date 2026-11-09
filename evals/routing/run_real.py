@@ -39,7 +39,7 @@ def prompts():
 
 def loads(stream):
     """Skill names in load order, from Skill calls and from reads of a SKILL.md."""
-    found, error = [], None
+    found, via, error = [], {}, None
     for raw in stream.splitlines():
         try:
             event = json.loads(raw)
@@ -59,7 +59,11 @@ def loads(stream):
                 name = m.group(1) if m else None
             if name and name not in found:
                 found.append(name)
-    return found, error
+            if name and block["name"] == "Skill":
+                via[name] = "skill"
+            elif name:
+                via.setdefault(name, "read")
+    return found, via, error
 
 
 def run_one(number, prompt, opts):
@@ -79,11 +83,11 @@ def run_one(number, prompt, opts):
             done = subprocess.run(command, cwd=work, capture_output=True, text=True,
                                   timeout=TIMEOUT, stdin=subprocess.DEVNULL)
         except subprocess.TimeoutExpired:
-            return number, [], "timeout"
-    found, error = loads(done.stdout)
+            return number, [], {}, "timeout"
+    found, via, error = loads(done.stdout)
     if done.returncode and not error:
         error = f"exit {done.returncode}: {done.stderr[:200]}"
-    return number, found, error
+    return number, found, via, error
 
 
 def row(number, found, project):
@@ -111,8 +115,8 @@ def main():
         results = sorted(pool.map(lambda c: run_one(c[0], c[1], opts), cases.items()))
     with open(opts.out, "w", encoding="utf-8") as table, open(opts.out + ".jsonl", "w", encoding="utf-8") as raw:
         table.write("| # | stage skill | domain skills | other skills |\n|---|---|---|---|\n")
-        for number, found, error in results:
-            raw.write(json.dumps({"case": number, "loads": found, "error": error}, ensure_ascii=False) + "\n")
+        for number, found, via, error in results:
+            raw.write(json.dumps({"case": number, "loads": found, "via": via, "error": error}, ensure_ascii=False) + "\n")
             if error:
                 print(f"case {number}: {error}")
             else:
