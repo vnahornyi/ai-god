@@ -52,7 +52,8 @@ STRONG_GENERAL and the background mapping, one run each). Save each returned tab
 
 On Claude Code, measure real loads instead: `evals/routing/run_real.py --model <alias> --out <run>.md`
 runs one fresh session per prompt with Skill and Read only, and writes a table for `grade.py` plus a
-raw load log. Keep both under `results/raw/` with the commit they measured: a score that cannot be
+raw load log. Add `--fixture` to run in a small React Native app, needed to judge domain skills, which
+trigger on the files in scope. Keep both under `results/raw/` with the commit they measured: a score that cannot be
 regraded cannot be compared.
 
 ## Review and planning fixtures (E7, E8)

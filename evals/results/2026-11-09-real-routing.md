@@ -29,7 +29,33 @@ the gap is an indication, not a measured effect. Runs have n = 1 per case.
 
 Domain skills account for most misses. The router loads them when "the actual files in scope" trigger
 them, and these sessions have no repository, so part of this is the empty directory and not a router
-fault. A fixture repository would separate the two.
+fault. The fixture run below separates the two.
+
+## In a repository (`--fixture`)
+
+The same 35 prompts and key, in a copy of `evals/routing/fixture-rn` (a small React Native app), with
+read-only Glob and Grep added. Raw: `raw/2026-11-09-fixture-*`.
+
+| Mapping | Empty directory | Fixture repository |
+|---|---|---|
+| Opus 5.5 · medium | 30 | 34 |
+| Sonnet 5.5 · medium | 31 | 32 |
+| Haiku 5.5 · xhigh | 28 | 32 |
+
+| Case | Opus | Sonnet | Haiku | Miss |
+|---|---|---|---|---|
+| 8 | | | ✗ | `react-native-animations` not loaded |
+| 9 | | ✗ | | no stage loaded |
+| 16 | | ✗ | | `frontend-craft` not loaded |
+| 26 | | | ✗ | `frontend-craft` not loaded |
+| 27 | ✗ | | ✗ | `wf-jira-task` loaded with `wf-implement` |
+| 28 | | ✗ | | `frontend-craft` not loaded |
+
+Most empty-directory misses came from the missing repository, so no router change follows from them.
+Case 27 is the one miss repeated on the same mappings in both conditions. `run_real.py` counts a Read
+of a `SKILL.md` as a load, so a session reading that skill as an example of the format would score the
+same; the raw log does not record which it was. The other misses each appear on one mapping, once.
+In case 33 (commit) Sonnet and Haiku loaded nothing, not even the router; the key accepts that.
 
 ## Decisions from this run
 
@@ -41,5 +67,5 @@ fault. A fixture repository would separate the two.
 
 ## Not verified
 
-Other runtimes. Variance between runs. Whether a session inside a real repository loads the domain
-skills.
+Other runtimes. Variance between runs. Behaviour in a larger, real repository. What the sessions did
+after loading their skills.

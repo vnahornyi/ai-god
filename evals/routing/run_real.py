@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Measure real skill loads: one fresh `claude -p` session per prompt in evals/routing/cases.md.
 
-  run_real.py --model ALIAS --out RUN.md [--effort LEVEL] [--cases 1,5,31] [--jobs 4]
+  run_real.py --model ALIAS --out RUN.md [--effort LEVEL] [--cases 1,5,31] [--jobs 4] [--fixture]
+
+--fixture runs each session in a copy of evals/routing/fixture-rn, a small React Native app, and adds
+the read-only Glob and Grep so the session can see what is in scope.
 
 Unlike the self-report runner brief in cases.md, nothing tells the session it is being measured.
 Each session gets only the Skill and Read tools and no MCP servers, in an empty directory, so a
@@ -14,11 +17,13 @@ import concurrent.futures
 import json
 import os
 import re
+import shutil
 import subprocess
 import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SKILLS = os.path.realpath(os.path.join(HERE, "..", "..", "skills"))
+FIXTURE = os.path.join(HERE, "fixture-rn")
 READ_SKILL = re.compile(r"/skills/([a-z0-9-]+)/SKILL\.md$")
 TIMEOUT = 300
 
@@ -58,14 +63,20 @@ def loads(stream):
 
 
 def run_one(number, prompt, opts):
+    tools = "Skill,Read,Glob,Grep" if opts.fixture else "Skill,Read"
     command = ["claude", "-p", prompt, "--model", opts.model, "--output-format", "stream-json",
-               "--verbose", "--tools", "Skill,Read", "--allowedTools", "Skill,Read",
+               "--verbose", "--tools", tools, "--allowedTools", tools,
                "--strict-mcp-config", "--no-session-persistence"]
     if opts.effort:
         command += ["--effort", opts.effort]
-    with tempfile.TemporaryDirectory() as empty:
+    with tempfile.TemporaryDirectory() as work:
+        if opts.fixture:
+            work = os.path.join(work, "app")
+            shutil.copytree(FIXTURE, work)
+            # Stored without the dot so the repo's ignore rule for plans does not hide it.
+            os.rename(os.path.join(work, "dot-claude"), os.path.join(work, ".claude"))
         try:
-            done = subprocess.run(command, cwd=empty, capture_output=True, text=True,
+            done = subprocess.run(command, cwd=work, capture_output=True, text=True,
                                   timeout=TIMEOUT, stdin=subprocess.DEVNULL)
         except subprocess.TimeoutExpired:
             return number, [], "timeout"
@@ -90,6 +101,7 @@ def main():
     parser.add_argument("--out", required=True)
     parser.add_argument("--cases")
     parser.add_argument("--jobs", type=int, default=4)
+    parser.add_argument("--fixture", action="store_true")
     opts = parser.parse_args()
     cases = prompts()
     if opts.cases:
