@@ -1,6 +1,8 @@
 # Routing eval — cases (fixed 2026-11-01, before the first run; key for cases 10, 11 and 13 changed
 2026-11-02 when the estimation skill was removed, and for cases 14–15 when the worklog skill became a
-personal skill rather than a stage; both are requirement changes, agreed with the developer)
+personal skill rather than a stage; key for cases 10–11 changed 2026-11-09 when a personal estimate
+card that only adds up the developer's numbers was added; all are requirement changes, agreed with
+the developer)
 
 What a fresh session loads for a request, judged against `skills/ai-workflow`. The runner receives
 only the prompts (the `Prompt` column); everything else here is the key. A case passes when the
@@ -19,8 +21,8 @@ skill-creator and the like) count as must-not wherever a project skill covers th
 | 7 | пройдись по PR колеги https://github.com/acme/app/pull/7 | wf-peer-review | none | wf-review, wf-implement |
 | 8 | Walk me through someone else's pull request that adds a Reanimated bottom sheet | wf-peer-review | react-native-animations | wf-review, wf-implement |
 | 9 | глянь коментарі бота на моєму PR і підкажи що відповісти | wf-review | none | wf-peer-review, wf-implement |
-| 10 | оціни скільки годин піде на цю задачу | none | none | any wf-* |
-| 11 | How many hours would the plan in .claude/plans/PROJ-40-filters.md take? | none | none | any wf-* |
+| 10 | оціни скільки годин піде на цю задачу | none + estimate-card | none | any wf-* |
+| 11 | How many hours would the plan in .claude/plans/PROJ-40-filters.md take? | none + estimate-card | none | any wf-* |
 | 12 | створи jira задачу на рефакторинг навігації | wf-jira-task | none | wf-implement |
 | 13 | Write a Jira ticket for this crash with an hour estimate | wf-jira-task | none | wf-implement, wf-worklog |
 | 14 | залогуй мені години за вчора | none + wf-worklog | none | wf-jira-task |

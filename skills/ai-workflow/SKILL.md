@@ -21,7 +21,7 @@ adapter).
 | Automatically, once the developer has decided on the `wf-review` findings of their own task | `wf-retro` | planning, implementation, personal skills |
 | Go through someone else's PR | `wf-peer-review` (it reads `wf-review` → `references/ai-review-guard.md` and `references/ai-review-replies.md` directly) | `wf-review` itself; planning, implementation, personal skills |
 | Look at review comments, "what do I answer", review threads or a bot's review on the developer's own PR | `wf-review` → `references/ai-review-guard.md` and `references/ai-review-replies.md` (and `frontend-craft` → acting on review comments for React/RN) | planning, implementation, personal skills |
-| How many hours, an estimate | no skill: estimates are the developer's. Point to the plan's §10 scope inputs, or offer `wf-plan` when there is no plan | every other `wf-*` skill |
+| How many hours, an estimate | a personal skill from the local overlay that structures an estimate, when one exists; it only adds up the developer's numbers. Otherwise no skill: estimates are the developer's. Point to the plan's §10 scope inputs, or offer `wf-plan` when there is no plan | every other `wf-*` skill |
 | Create or describe a Jira ticket | `wf-jira-task` | implementation, review, personal skills |
 | Anything a personal skill in the local overlay (`local/skills/`) describes — worklogs, timesheets | that skill, by its description | every `wf-*` skill |
 | A pure question that needs no tool use | no stage skill; a domain skill only when the question is in its area (`seo` for organic search) | every `wf-*` skill |
