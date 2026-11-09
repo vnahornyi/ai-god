@@ -182,7 +182,10 @@ When `command -v claude` finds the CLI, the terminal form is
   personal keys such as `autoMode`, which Claude Code reads only from user settings: `git push`,
   `git add .`/`-A`, amend, `--no-verify`, rebase, `reset --hard`, `git stash` (push, save, pop, apply, drop, clear)
   and branch deletion denied — stash push added after two eval runs stashed to test old code
-  (flags written after other arguments are covered for `add` and `commit` only),
+  (flags written after other arguments are covered for `add` and `commit` only). Also denied: staging
+  or committing without naming files (`commit -a`, `add -u`, `add :/`), hook bypass through `git -c`,
+  `gh pr merge`/`close` and `gh api` writes; `gh api` reads and GraphQL queries stay allowed. These
+  are prefix patterns, so a reordered or wrapped command can still slip past: the Git rules stay binding,
   `bin/push-ai-god` allowed. The desktop app and `claude plugin install` write into it (theme,
   `switchModelsOnFlag`, `enabledPlugins`, marketplaces), so those diffs land in the overlay repo —
   commit there what reproduces the setup, and copy an entry into the base when it is public policy.
