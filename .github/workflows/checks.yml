@@ -33,7 +33,7 @@ jobs:
         run: |
           for f in install.sh bin/push-ai-god .githooks/*; do bash -n "$f"; done
           git ls-files '*.json' | xargs -I{} python3 -m json.tool {} /dev/null
-          python3 -m py_compile bin/lint-skills bin/check-public bin/token-report evals/routing/grade.py
+          python3 -m py_compile bin/lint-skills bin/check-public bin/token-report evals/routing/grade.py evals/routing/run_real.py
 
       - name: Install into a clean home, then check
         run: |

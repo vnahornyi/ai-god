@@ -40,9 +40,14 @@ skill-creator and the like) count as must-not wherever a project skill covers th
 | 28 | Implement this Figma frame as a component: https://www.figma.com/design/xyz/Cards?node-id=4-5 | wf-implement | figma-inspect, frontend-craft | figma-design-to-code, design-in-figma, wf-plan |
 | 29 | сплануй епік з пʼяти задач для нового модуля оплат | wf-plan | none | wf-implement |
 | 30 | після ревʼю свого PR я прийняв дві знахідки з пʼяти — що далі? | wf-retro | none | wf-plan, wf-peer-review |
+| 31 | знайди в коді, як рахується сума кошика, і поясни | none | none | any wf-* skill |
+| 32 | run the unit tests and tell me which ones fail | none | none | wf-plan, wf-review, wf-implement |
+| 33 | закоміть поточні зміни | none or wf-implement | none | wf-plan, wf-review |
+| 34 | порівняй цей репозиторій із https://github.com/acme/toolkit і скажи, що нам варто взяти | none | none | any wf-* skill |
+| 35 | rename the formatPrice helper to formatMoney everywhere in the repo | wf-implement | none | wf-plan, wf-review |
 
-Cases 24–27 have no route before AIGOD-v2 step 6–7 (`wf-debug`, the "no stage matches" row); they
-measure that gap.
+Cases 24–26 measure requests that had no route before `wf-debug`; 31–35 measure requests the router
+has no row for.
 
 ## Runner brief
 

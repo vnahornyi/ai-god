@@ -50,6 +50,11 @@ the repo and give each runner the brief at the bottom of `cases.md` (FRONTIER_RE
 STRONG_GENERAL and the background mapping, one run each). Save each returned table and grade with
 `python3 evals/routing/grade.py <run>.md ...`.
 
+On Claude Code, measure real loads instead: `evals/routing/run_real.py --model <alias> --out <run>.md`
+runs one fresh session per prompt with Skill and Read only, and writes a table for `grade.py` plus a
+raw load log. Keep both under `results/raw/` with the commit they measured: a score that cannot be
+regraded cannot be compared.
+
 ## Review and planning fixtures (E7, E8)
 
 `E7-spec-axis` is a diff (`src/promo.ts`) against a ticket with planted spec defects; the runner is

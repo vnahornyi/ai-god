@@ -1,0 +1,35 @@
+{"case": 1, "loads": ["ai-workflow", "wf-plan", "frontend-craft", "figma-inspect"], "error": null}
+{"case": 2, "loads": ["ai-workflow", "wf-plan"], "error": null}
+{"case": 3, "loads": ["ai-workflow", "wf-implement"], "error": null}
+{"case": 4, "loads": ["ai-workflow", "wf-implement"], "error": null}
+{"case": 5, "loads": ["ai-workflow", "wf-review"], "error": null}
+{"case": 6, "loads": ["ai-workflow", "wf-review"], "error": null}
+{"case": 7, "loads": ["ai-workflow", "wf-peer-review"], "error": null}
+{"case": 8, "loads": ["ai-workflow", "wf-peer-review"], "error": null}
+{"case": 9, "loads": ["ai-workflow", "wf-review"], "error": null}
+{"case": 10, "loads": ["ai-workflow"], "error": null}
+{"case": 11, "loads": ["ai-workflow"], "error": null}
+{"case": 12, "loads": ["ai-workflow", "wf-jira-task"], "error": null}
+{"case": 13, "loads": ["ai-workflow", "wf-jira-task"], "error": null}
+{"case": 14, "loads": ["ai-workflow", "wf-worklog"], "error": null}
+{"case": 15, "loads": ["ai-workflow", "wf-worklog"], "error": null}
+{"case": 16, "loads": ["ai-workflow", "wf-implement"], "error": null}
+{"case": 17, "loads": ["seo"], "error": null}
+{"case": 18, "loads": ["ai-workflow", "wf-debug", "apple-neural-engine", "realtime-vision-pipeline"], "error": null}
+{"case": 19, "loads": ["ai-workflow", "design-patterns"], "error": null}
+{"case": 20, "loads": ["ai-workflow", "wf-implement", "worktree", "wf-plan"], "error": null}
+{"case": 21, "loads": ["ai-workflow", "worktree"], "error": null}
+{"case": 22, "loads": [], "error": null}
+{"case": 23, "loads": [], "error": null}
+{"case": 24, "loads": ["ai-workflow", "wf-debug"], "error": null}
+{"case": 25, "loads": ["ai-workflow", "wf-debug"], "error": null}
+{"case": 26, "loads": ["ai-workflow", "wf-debug"], "error": null}
+{"case": 27, "loads": ["ai-workflow", "wf-implement", "wf-jira-task"], "error": null}
+{"case": 28, "loads": ["ai-workflow", "wf-implement", "figma-inspect"], "error": null}
+{"case": 29, "loads": ["ai-workflow", "wf-plan"], "error": null}
+{"case": 30, "loads": ["ai-workflow", "wf-retro"], "error": null}
+{"case": 31, "loads": ["ai-workflow"], "error": null}
+{"case": 32, "loads": ["ai-workflow"], "error": null}
+{"case": 33, "loads": ["ai-workflow"], "error": null}
+{"case": 34, "loads": ["ai-workflow"], "error": null}
+{"case": 35, "loads": ["ai-workflow", "wf-implement"], "error": null}
