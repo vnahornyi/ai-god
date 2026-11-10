@@ -1,0 +1,4 @@
+{"case": 1, "loads": ["ai-workflow", "wf-plan"], "via": {"ai-workflow": "skill", "wf-plan": "skill"}, "error": null}
+{"case": 28, "loads": ["ai-workflow", "wf-implement", "figma-inspect", "frontend-craft"], "via": {"ai-workflow": "skill", "wf-implement": "skill", "figma-inspect": "skill", "frontend-craft": "skill"}, "error": null}
+{"case": 36, "loads": ["ai-workflow", "wf-implement", "figma-inspect"], "via": {"ai-workflow": "skill", "wf-implement": "skill", "figma-inspect": "skill"}, "error": null}
+{"case": 37, "loads": ["ai-workflow", "wf-implement", "figma-inspect", "react-native-animations"], "via": {"ai-workflow": "skill", "wf-implement": "skill", "figma-inspect": "skill", "react-native-animations": "skill"}, "error": null}
