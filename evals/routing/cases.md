@@ -47,9 +47,11 @@ skill-creator and the like) count as must-not wherever a project skill covers th
 | 33 | закоміть поточні зміни | none or wf-implement | none | wf-plan, wf-review |
 | 34 | порівняй цей репозиторій із https://github.com/acme/toolkit і скажи, що нам варто взяти | none | none | any wf-* skill |
 | 35 | rename the formatPrice helper to formatMoney everywhere in the repo | wf-implement | none | wf-plan, wf-review |
+| 36 | зверстай стилі цього екрана піксель-в-піксель за макетом, логіка вже є: https://www.figma.com/design/abc/Checkout?node-id=7-8 | wf-implement | figma-inspect, frontend-craft | figma-design-to-code, design-in-figma, wf-plan |
+| 37 | Add the press and appear animations from the Figma prototype to the Toast component: https://www.figma.com/design/abc/Toast?node-id=9-1 | wf-implement | figma-inspect, react-native-animations | figma-design-to-code, design-in-figma, wf-plan |
 
 Cases 24–26 measure requests that had no route before `wf-debug`; 31–35 measure requests the router
-has no row for.
+has no row for. 36–37 (added 2026-11-10) measure assigned visual work.
 
 ## Runner brief
 

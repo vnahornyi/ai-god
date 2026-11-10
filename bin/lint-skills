@@ -23,8 +23,7 @@ NAME = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$")
 LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
 LEAK = re.compile(r"SendMessage|subagent_type|run_in_background|ToolSearch|mcp__|Skill tool|spawn_agent"
                   r"|fork_turns|\bClaude\b|Codex|Copilot|Opus|Sonnet|Haiku|Fable|gpt-")
-# README → "Expected hits": an MCP server's tool names.
-LEAK_ALLOWED = {"figma-inspect/SKILL.md", "figma-inspect/references/browser-recipes.md"}
+LEAK_ALLOWED = set()  # files allowed to name runtime tools; none today
 # global/AGENTS.md → Language: the public tree is English. Test inputs under evals/ are exempt.
 NON_ENGLISH = re.compile(r"[\u0400-\u04FF]")
 ENGLISH_DOCS = ["global/AGENTS.md", "AGENTS.md", "README.md", "INSTALL.md", "adapters/**/*.md",

@@ -24,9 +24,9 @@ import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SKILL = re.compile(r"\b(?:wf-[a-z-]+|ai-workflow|frontend-craft|figma-inspect|design-patterns|seo|worktree"
-                   r"|react-native-animations|apple-neural-engine|realtime-vision-pipeline|skill-creator"
-                   r"|figma-design-to-code|design-in-figma|code-review)\b")
+SKILL = re.compile(r"\b(?:wf-[a-z-]+|ai-workflow|frontend-craft|figma-inspect|design-patterns|seo"
+                   r"|worktree|react-native-animations|apple-neural-engine|realtime-vision-pipeline"
+                   r"|skill-creator|figma-design-to-code|design-in-figma|code-review)(?![\w-])")
 
 
 def cells(line):
@@ -44,7 +44,10 @@ def names(text):
 def project_skills():
     root = os.path.join(HERE, "..", "..", "skills")
     # wf-worklog is a personal skill in the private overlay; the key names it.
-    return set(os.listdir(root)) | {"wf-worklog"}
+    personal = os.path.join(HERE, "..", "..", "local", "skills")
+    mine = set(os.listdir(personal)) if os.path.isdir(personal) else set()
+    # run_real.py records overlay skills as "personal".
+    return set(os.listdir(root)) | {"wf-worklog", "personal"} | mine
 
 
 def foreign_and_unreadable(columns, project):
@@ -134,6 +137,8 @@ def self_test():
         ("| 14 | none | none | wf-worklog |", True),
         ("| 22 | none | none | deep-research |", True),
         ("| 22 | wf-plan | none | none |", False),
+        ("| 36 | wf-implement | figma-inspect, frontend-craft | none |", True),
+        ("| 36 | wf-implement | figma-inspect-extra, frontend-craft | none |", False),
     ]
     failures = 0
     for row, should_pass in cases:

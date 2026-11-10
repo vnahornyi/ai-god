@@ -90,8 +90,9 @@ def run_one(number, prompt, opts):
     return number, found, via, error
 
 
-def row(number, found, project):
-    names = [s.split(":")[-1] if s.split(":")[-1] in project else s for s in found]
+def row(number, found, project, mine):
+    # Overlay skill names are private: the public record says only that a personal skill loaded.
+    names = ["personal" if s in mine else s.split(":")[-1] if s.split(":")[-1] in project else s for s in found]
     stage = [s for s in names if s.startswith("wf-")] + [s for s in names if s == "ai-workflow"]
     domain = [s for s in names if s in project and not s.startswith("wf-") and s != "ai-workflow"]
     other = [s for s in names if s not in project and not s.startswith("wf-")]
@@ -110,17 +111,22 @@ def main():
     cases = prompts()
     if opts.cases:
         cases = {n: cases[n] for n in map(int, opts.cases.split(","))}
-    project = set(os.listdir(SKILLS)) | {"wf-worklog"}
+    personal = os.path.join(SKILLS, "..", "local", "skills")
+    mine = set(os.listdir(personal)) if os.path.isdir(personal) else set()
+    project = set(os.listdir(SKILLS)) | {"wf-worklog"} | mine
     with concurrent.futures.ThreadPoolExecutor(opts.jobs) as pool:
         results = sorted(pool.map(lambda c: run_one(c[0], c[1], opts), cases.items()))
     with open(opts.out, "w", encoding="utf-8") as table, open(opts.out + ".jsonl", "w", encoding="utf-8") as raw:
         table.write("| # | stage skill | domain skills | other skills |\n|---|---|---|---|\n")
         for number, found, via, error in results:
-            raw.write(json.dumps({"case": number, "loads": found, "via": via, "error": error}, ensure_ascii=False) + "\n")
+            hide = lambda s: "personal" if s in mine else s
+            raw.write(json.dumps({"case": number, "loads": [hide(s) for s in found],
+                                  "via": {hide(s): v for s, v in via.items()}, "error": error},
+                                 ensure_ascii=False) + "\n")
             if error:
                 print(f"case {number}: {error}")
             else:
-                table.write(row(number, found, project) + "\n")
+                table.write(row(number, found, project, mine) + "\n")
 
 
 if __name__ == "__main__":

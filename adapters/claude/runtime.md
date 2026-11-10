@@ -90,7 +90,7 @@ At session start, from what this session actually has — never from memory:
 | Current model | The system prompt states the model; effort is not visible — assume the developer's default (`settings.json` → `effortLevel`) |
 | Review engine | The built-in `code-review` skill (`/code-review`), report-only: never `--comment`, `--fix` or `--post` |
 | Jira / Confluence | Atlassian MCP (`getAccessibleAtlassianResources` once for the cloud id, then `getJiraIssue`, `searchJiraIssuesUsingJql`, `createJiraIssue`) |
-| Figma | TemPad Dev MCP from the `tempad-dev` plugin (read tools only, see `figma-inspect`); the plugin's own skills `figma-design-to-code` and `design-in-figma` are not used |
+| Figma | Figma's Dev Mode MCP server (read tools only, see `figma-inspect`), or the source the overlay's `figma-source.md` names; third-party Figma-to-code and design-in-Figma skills are not used |
 | Subagents | `Agent` tool present; its `model` enum lists the aliases available |
 | Deferred tools (browser, MCP) | Listed by name in system reminders; load schemas in one batch with `ToolSearch` before calling |
 | Browser, signed-in | `mcp__claude-in-chrome__*` (real Chrome, logged-in sessions) |
@@ -191,10 +191,6 @@ When `command -v claude` finds the CLI, the terminal form is
   commit there what reproduces the setup, and copy an entry into the base when it is public policy.
 - `switchModelsOnFlag: false` — when a request is flagged and refused, do not switch the session to
   a fallback model automatically.
-- Plugin `tempad-dev` (TemPad Dev MCP + lifecycle hooks that only send the session id and event name
-  to a local socket). Its MCP runs `npx -y @tempad-dev/mcp@latest`. A personal integration, so it is
-  enabled in the overlay's settings, not the base; without it `figma-inspect` uses its browser
-  fallback. Install it from the `ecomfe/tempad-dev` marketplace to get the MCP path.
 - No hooks of our own. Rely on the conversation summary for continuity; no handoff file.
 
 ## Skills and instructions

@@ -225,8 +225,7 @@ Check a skill change mechanically before staging (the pre-commit hook runs it to
 
 It enforces the frontmatter, size and link rules from the root `AGENTS.md` → "Changing a skill", the
 router coverage, the leak scan for runtime tool and model names, and English-only text in the public
-tree (`global/AGENTS.md` → Language; test inputs under `evals/` are exempt). Allowed leak hits: the
-TemPad Dev tool names in `figma-inspect` (an MCP server, the same in every runtime).
+tree (`global/AGENTS.md` → Language; test inputs under `evals/` are exempt).
 
 ## Project-local paths the skills write
 

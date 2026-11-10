@@ -19,7 +19,7 @@ between sessions. Every recipe here therefore matches on **text shape**, not on 
 
 ## 0. Open and confirm the session
 
-Fallback only — prefer TemPad Dev MCP (see `SKILL.md`). Navigate to the link as given, including
+Fallback only — prefer an MCP source (see `SKILL.md` → Sources). Navigate to the link as given, including
 `node-id`. A **viewer in Design mode** has both the layers panel and a read-only properties panel
 (verified 2026-10-13), so view-only is not a reason to stop. If the URL switches to `m=dev` and an
 upsell dialog appears, click "Back to Design Mode".
