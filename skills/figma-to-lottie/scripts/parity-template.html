@@ -1,0 +1,118 @@
+<title>Lottie Parity Check</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{--bg:#f7f6f1;--fg:#25231c;--muted:#6d6957;--card:#fff;--line:#e2dfd2;--accent:#b58a00;--bad:#c8402f;--good:#2f7d4f;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1a16;--fg:#ecebe4;--muted:#a19d8a;--card:#24231e;--line:#3a382f;--accent:#e5bd3a;--bad:#ff7a66;--good:#6fd39a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1b1a16;--fg:#ecebe4;--muted:#a19d8a;--card:#24231e;--line:#3a382f;--accent:#e5bd3a;--bad:#ff7a66;--good:#6fd39a;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,sans-serif;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px}
+main{max-width:920px;margin:0 auto;display:grid;gap:20px}
+h1{font-size:20px;margin:0;text-wrap:balance}
+p{margin:0;color:var(--muted);max-width:65ch}
+.row{display:flex;gap:16px;flex-wrap:wrap}
+.stage{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px;display:grid;gap:4px;justify-items:center}
+.stage b{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#6d6957}
+.stage svg,.stage canvas,.stage>div{width:220px;height:200px}
+.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+input[type=range]{flex:1;min-width:200px}
+button{font:inherit;padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+#chart{width:100%;height:120px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.stat{font-variant-numeric:tabular-nums}
+.ok{color:var(--good)}.bad{color:var(--bad)}
+.strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.strip figure{margin:0;background:#fff;border:1px solid var(--line);border-radius:8px;padding:4px;display:grid;gap:2px}
+.strip canvas{width:100%;height:auto}
+.strip figcaption{font-size:11px;color:#6d6957;text-align:center}
+</style>
+<main>
+<h1>Lottie vs reference model</h1>
+<p>Left: the baked Lottie JSON rendered by lottie-web. Middle: the reference model drawn as SVG. Right: pixel difference (red is where they disagree). The chart is the share of differing pixels per frame.</p>
+<div class="controls"><button id="play">Play</button><input id="scrub" type="range" min="0" max="96" step="1" value="0"><span id="fr" class="stat">frame 0</span></div>
+<div class="row">
+<div class="stage"><b>Lottie</b><div id="lottie"></div></div>
+<div class="stage"><b>Reference</b><div id="ref"></div></div>
+<div class="stage"><b>Diff</b><canvas id="diff" width="330" height="300"></canvas></div>
+</div>
+<canvas id="chart" width="900" height="120"></canvas>
+<p id="summary" class="stat">Comparing…</p>
+<div class="strip" id="strip"></div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie_svg.min.js"></script>
+<script>
+// Fill both placeholders, then open the page.
+const LOTTIE = /*LOTTIE_JSON*/;
+/** referenceSvg(frame, width, height) → SVG string of the model at that frame, with the design's viewBox. */
+const referenceSvg = /*REFERENCE_SVG*/;
+
+const TOTAL = Math.round(LOTTIE.op), SCALE = 3, W = LOTTIE.w * SCALE, H = LOTTIE.h * SCALE;
+const THRESHOLD = 48;
+document.getElementById('scrub').max = TOTAL;
+document.getElementById('diff').width = W; document.getElementById('diff').height = H;
+const anim = lottie.loadAnimation({container: document.getElementById('lottie'), renderer: 'svg', loop: false, autoplay: false, animationData: LOTTIE});
+const refBox = document.getElementById('ref');
+const toImage = text => new Promise(resolve => { const img = new Image(); img.onload = () => resolve(img); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(text); });
+function lottieSvg(frame) {
+  anim.goToAndStop(frame, true);
+  const el = document.querySelector('#lottie svg').cloneNode(true);
+  el.setAttribute('width', W); el.setAttribute('height', H); el.setAttribute('xmlns', 'http://www.w3.org/2000/svg'); el.removeAttribute('style');
+  return new XMLSerializer().serializeToString(el);
+}
+function pixels(img) { const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, W, H); x.drawImage(img, 0, 0, W, H); return x.getImageData(0, 0, W, H); }
+async function compare(frame) {
+  const [a, b] = await Promise.all([toImage(lottieSvg(frame)), toImage(referenceSvg(frame, W, H))]);
+  const pa = pixels(a), pb = pixels(b), out = new ImageData(W, H);
+  let differ = 0, ink = 0;
+  for (let i = 0; i < pa.data.length; i += 4) {
+    const d = Math.max(...[0, 1, 2].map(k => Math.abs(pa.data[i + k] - pb.data[i + k])));
+    if ([0, 1, 2].some(k => pa.data[i + k] < 250 || pb.data[i + k] < 250)) ink++;
+    if (d > THRESHOLD) differ++;
+    const g = 255 - (255 - pb.data[i]) * 0.25;
+    out.data.set(d > THRESHOLD ? [230, 60, 40, 255] : [g, g, g, 255], i);
+  }
+  return {frame, share: differ / Math.max(ink, 1), out};
+}
+const results = [];
+function drawChart() {
+  const c = document.getElementById('chart'), x = c.getContext('2d'), css = getComputedStyle(document.documentElement);
+  x.clearRect(0, 0, c.width, c.height);
+  const max = Math.max(0.05, ...results.map(r => r.share));
+  x.strokeStyle = css.getPropertyValue('--line'); x.beginPath(); x.moveTo(0, 110); x.lineTo(900, 110); x.stroke();
+  x.fillStyle = css.getPropertyValue('--accent');
+  results.forEach(r => { const h = r.share / max * 100; x.fillRect(r.frame / TOTAL * 890 + 4, 110 - h, Math.max(2, 700 / TOTAL), h); });
+  x.fillStyle = css.getPropertyValue('--muted'); x.font = '11px system-ui'; x.fillText('max ' + (max * 100).toFixed(1) + '%', 6, 12);
+}
+async function show(frame) {
+  document.getElementById('fr').textContent = 'frame ' + frame;
+  const r = await compare(frame);
+  refBox.innerHTML = referenceSvg(frame, 220, 200);
+  document.getElementById('diff').getContext('2d').putImageData(r.out, 0, 0);
+}
+async function run() {
+  for (let frame = 0; frame <= TOTAL; frame++) results.push(await compare(frame));
+  drawChart();
+  const worst = [...results].sort((p, q) => q.share - p.share)[0];
+  const mean = results.reduce((s, r) => s + r.share, 0) / results.length;
+  document.getElementById('summary').innerHTML = `Mean differing pixels <b>${(mean * 100).toFixed(2)}%</b> of drawn area · worst frame <b>${worst.frame}</b> at <b class="${worst.share < 0.02 ? 'ok' : 'bad'}">${(worst.share * 100).toFixed(2)}%</b> · over 2%: ${results.filter(r => r.share > 0.02).map(r => r.frame).join(', ') || 'none'}`;
+  window.parity = {mean, worstFrame: worst.frame, worstShare: worst.share, perFrame: results.map(r => +r.share.toFixed(4))};
+  document.title = `Parity ${(mean * 100).toFixed(2)}% · worst ${(worst.share * 100).toFixed(2)}% @${worst.frame}`;
+  const strip = document.getElementById('strip');
+  for (let k = 0; k <= 12; k++) {
+    const r = results[Math.round(k / 12 * TOTAL)];
+    const fig = document.createElement('figure'), cv = document.createElement('canvas'), cap = document.createElement('figcaption');
+    cv.width = W; cv.height = H; cv.getContext('2d').putImageData(r.out, 0, 0);
+    cap.textContent = `f${r.frame} · ${(r.share * 100).toFixed(1)}%`; fig.append(cv, cap); strip.append(fig);
+  }
+  show(0);
+}
+const scrub = document.getElementById('scrub');
+scrub.oninput = () => show(+scrub.value);
+document.getElementById('play').onclick = async () => {
+  const start = performance.now(), duration = TOTAL / LOTTIE.fr * 1000;
+  anim.goToAndPlay(0, true);
+  for (let t = 0; t <= duration; t = performance.now() - start) { refBox.innerHTML = referenceSvg(Math.min(TOTAL, t / 1000 * LOTTIE.fr), 220, 200); await new Promise(r => requestAnimationFrame(r)); }
+};
+// lottie-web builds the DOM asynchronously; start comparing once it reports itself loaded.
+(function startWhenLoaded() {
+  if (anim.isLoaded) run();
+  else requestAnimationFrame(startWhenLoaded);
+})();
+</script>

@@ -38,6 +38,7 @@ Load a domain skill only when the active stage skill or the actual files in scop
 |---|---|
 | React / React Native code in scope | `frontend-craft` (only the mode the stage needs) |
 | Reanimated, gestures, haptics, layout/scroll motion — building it, or a diff under review that adds or changes it | `react-native-animations` (review: its `references/motion-review.md`) |
+| An illustration or celebration animated from Figma keyframes, or a Lottie file to build, fix or shrink | `figma-to-lottie` |
 | A Figma link or UI that must follow a design | `figma-inspect` — never a third-party Figma-to-code or design-in-Figma skill |
 | A plan, diff or question names a design pattern, or a growing switch/prop explosion | `design-patterns` |
 | Organic-search impact of a web change | `seo` |

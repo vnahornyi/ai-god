@@ -63,7 +63,7 @@ Do not mirror progress, active index, phase, and completion in React state, refs
 | Pull to refresh | `RefreshControl`, unless the interaction is a signature one |
 | UI that follows the keyboard | `react-native-keyboard-controller`'s Reanimated hooks — the keyboard's real position per frame. Never `Keyboard` listeners plus a timing animation: the event arrives late and any guessed curve leads or lags |
 | Swipe to reveal row actions | Gesture Handler's `ReanimatedSwipeable` |
-| Illustration, celebration | Lottie — never for UI state |
+| Illustration, celebration | Lottie, built with `figma-to-lottie` — never for UI state |
 | A scene too large for the view hierarchy | Skia |
 
 **Then the cheapest Reanimated tool** — walk down, stop at the first that fits:
