@@ -15,7 +15,7 @@ ticket or plan, the project's rules); "yes" accepts every recommendation. Do not
 ticket, the plan or the repo already answers.
 
 1. Type: Story / Task / Bug; project key; epic or parent, if any.
-2. Your estimate, if you already have one — the ticket carries only the developer's number.
+2. Your estimate, if you already have one — only to fill the work plan's Share column; the estimate itself goes into the tracker's field, not the text.
 3. Research depth when there is no plan: none (your description only) / light (find modules,
    consumers, contract).
 

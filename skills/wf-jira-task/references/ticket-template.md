@@ -16,7 +16,7 @@ Why: the user or business problem. Links: docs, design (frame name), epic.
 - …
 
 ## Acceptance criteria
-- [ ] conditions a user or QA can observe — not "code is written"
+- conditions a user or QA can observe — not "code is written" (a plain bullet list, no checkboxes)
 
 ## Work plan
 | # | Block | What I do | What takes time here | Share |
@@ -33,9 +33,7 @@ Why: the user or business problem. Links: docs, design (frame name), epic.
 
 ## Dependencies & risks
 - risk → effect on the estimate (e.g. "field missing in API → next gradation")
-
-## Estimate
-<the developer's number, or "not set">
 ```
 
-Drop the **Share** column when there is no number the developer gave or accepted.
+Drop the **Share** column when there is no number the developer gave or accepted. The ticket has
+no estimate section: the developer sets the estimate in the tracker's own field.
